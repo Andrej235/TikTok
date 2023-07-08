@@ -1,85 +1,34 @@
 body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
     padding: 0;
-    display: grid;
-    place-items: center;
-    background-color: #474747;
-    /* background-image: url("images/CoolBck.jpg"); */
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-blend-mode: soft-light;
-    overflow-x: hidden;
-    overflow-y: hidden;
-}
-
-#bg {
-    aspect-ratio: 9 / 16;
-    background-color: #000;
+    margin: 0;
     height: 100vh;
+    aspect-ratio: 9 / 16;
 }
 
 #top-bar-wrapper {
-    width: 20%;
+    width: 100%;
     height: 10%;
-    /*background-color: #fff;*/
-
     position: absolute;
     top: 5%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
-    z-index: 2;
+    gap: 1.5vw;
 }
 
-.top-bar-txt {
+.top-bar-title {
     font-size: 2vw;
     font-weight: bold;
     color: white;
     font-family: 'Times New Roman', Times, serif;
+    cursor: pointer;
 }
 
 .media-wrapper {
     /*background-image: url("images/TTBG.jpeg");*/
     background-size: cover;
-}
-
-#bottom-icons-bar-wrapper {
-    width: 100%;
-    height: 10%;
-    /* background-color: #000; */
-
-    position: relative;
-    top: 100%;
-    transform: translate(0, -100%);
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-}
-
-    #bottom-icons-bar-wrapper .icon {
-        width: 3vw;
-        height: 3vw;
-        color: #fff;
-        font-size: 2vw;
-        text-align: center;
-        flex: 1 1 1;
-        margin: 2%;
-    }
-
-/* #bottom-icons-bar-wrapper .icon:nth-child(3) {
-    width: 4.8vw;
-    flex: 1.6 1.6 1.6;
-} */
-
-.icon-name {
-    color: white;
-    font-size: 1vw;
-    text-align: center;
-    font-family: 'Times New Roman', Times, serif;
 }
 
 #side-icons-bar-wrapper {
@@ -96,7 +45,10 @@ body {
 }
 
 #icons-side-menu {
-    transform: translate(0, 33%);
+    position: absolute;
+    transform: translate(-100%, -50%);
+    top: 60%;
+    left: 100%;
     width: 5vw;
     height: 45vh;
     /* background-color:black; */
@@ -107,33 +59,26 @@ body {
     align-items: center;
 }
 
-#side-icons-bar-wrapper #icons-side-menu .icon {
-    flex: 1 1 1;
-    color: #fff;
-    /* background-color:black; */
+    #icons-side-menu .icon:nth-child(1) {
+        width: 4.125vw;
+        height: 4.125vw;
+        line-height: 4.125vw;
+        font-size: 3.3vw;
+    }
 
-    display: inline-block;
-    text-align: center;
-    vertical-align: middle;
-    margin: 0.55vw;
-}
+    #icons-side-menu .icon {
+        color: #fff;
+        /* background-color:black; */
 
-#icons-side-menu .icon:nth-child(1) {
-    width: 4.125vw;
-    height: 4.125vw;
-    line-height: 4.125vw;
-    font-size: 3.3vw;
-}
-
-#icons-side-menu .icon:nth-child(2),
-:nth-child(3),
-:nth-child(4),
-:nth-child(5) {
-    width: 3.125vw;
-    height: 3.125vw;
-    line-height: 3.125vw;
-    font-size: 2.5vw;
-}
+        text-align: center;
+        vertical-align: middle;
+        margin: 0.55vw;
+        width: 3.125vw;
+        height: 3.125vw;
+        line-height: 3.125vw;
+        font-size: 2.5vw;
+        cursor: pointer;
+    }
 
 #like-button.click-enabled {
     animation: likeAnimation 0.25s linear 0s 1 normal forwards;
@@ -228,33 +173,61 @@ body {
 
 #comment-section-wrapper {
     width: 100%;
-    height: 60vh;
+    height: 0vh;
     background-color: #fff;
-    position: relative;
-    transform: translate(0%, -50%);
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translate(-50%, -100%);
     opacity: 1;
     padding: 0;
     margin: 0;
-    z-index: 1;
-    transition: 0.75s;
+    border-radius: 1.25vw 1.25vw 0 0;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    white-space: nowrap;
+    transition: 0.5s;
 }
 
-    #comment-section-wrapper.open {
-        top: 60%;
+    #comment-section-wrapper *, #comment-section-footer, #comment-section-footer * {
+        transition: 0.33s;
     }
 
-    #comment-section-wrapper.closed {
-        top: 150%;
+    #comment-section-wrapper.open {
+        height: 60vh;
+    }
+
+        #comment-section-wrapper.open #comment-section-header {
+            height: 5vh;
+            top: 0;
+        }
+
+        #comment-section-wrapper.open #comments-number {
+            opacity: 1;
+            font-size: 1.5vw;
+        }
+
+
+
+#comment-section-footer.open {
+    height: 7vh;
+}
+
+    #comment-section-footer.open #comment-input-field {
+        height: 60%;
+    }
+
+    #comment-section-footer.open #comment-input-field-profile-pic, #comment-section-footer.open #comment-input-field {
+        opacity: 1;
     }
 
 #comment-section-header {
     width: 100%;
-    height: 5vh;
+    height: 0vh;
     background-color: #fff;
-    border-radius: 1.25vw 1.25vw 0 0;
     position: relative;
-    transform: translate(0%, -50%);
-    top: -3.75%;
+    transform: translate(0%, 0);
+    top: 10%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -264,16 +237,21 @@ body {
     width: 100%;
     height: 5vh;
     line-height: 5vh;
-    font-size: 1.5vw;
+    font-size: 0;
     text-align: center;
     vertical-align: middle;
+    opacity: 0;
+    margin: 0;
 }
 
 #comments-list-wrapper {
     position: relative;
-    top: -5%;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
     width: 100%;
     height: 100%;
+    padding: 0;
     /* background-color: #000; */
 
     display: flex;
@@ -284,8 +262,8 @@ body {
 }
 
 .comment-wrapper {
-    margin: 3%;
-    width: 97%;
+    margin: 0;
+    width: 100%;
     height: fit-content;
     max-height: 25%;
     /* background-color: #000; */
@@ -339,33 +317,33 @@ body {
 
 #comment-section-footer {
     width: 100%;
-    height: 7vh;
-    /* background-color: #000; */
-
-    position: relative;
-    transform: translate(0%, -50%);
-    top: -21%;
+    height: 0;
+    position: fixed;
+    transform: translate(0%, -100%);
+    top: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 #comment-input-field-profile-pic {
-    width: 2.75vw;
-    height: 2.75vw;
+    height: 65%;
+    aspect-ratio: 1;
     border-radius: 100%;
     background-color: blue;
     margin: 0 1vw;
+    opacity: 0;
 }
 
 #comment-input-field {
-    width: 70%;
+    width: 80%;
     height: 60%;
     border-radius: 10vw;
     padding: 0rem 1rem;
-    background-color: #696969;
+    background-color: #ccc;
     margin: 0 1vw;
     color: #fff;
     font-size: 1.25rem;
-    border: 3px solid black;
+    border: 3px solid #aaa;
+    opacity: 0;
 }

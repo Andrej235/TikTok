@@ -4,16 +4,41 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - TikTok</title>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.css">
 </head>
 <body>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    <div id="bg">
+        <div id="bottom-icons-bar-wrapper">
+            <div class="icon fa fa-house">
+                <h1 class="icon-name">Home</h1>
+            </div>
 
-    <script src="~/js/site.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+            <div class="icon fa fa-user-group">
+                <h1 class="icon-name">Friends</h1>
+            </div>
+
+            <div id="plus-btn" class="icon fa fa-plus">
+                <h1 class="icon-name">Plus</h1>
+            </div>
+
+            <div class="icon fa fa-inbox">
+                <h1 class="icon-name">Inbox</h1>
+            </div>
+
+            <div id="user-profile-btn" class="icon fa fa-snowman">
+                <h1 class="icon-name">Profile</h1>
+            </div>
+        </div>
+
+        <div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+    
+    <script src="~/js/layoutLogic.js"></script>
+    @*@await RenderSectionAsync("Scripts", required: false)*@
 </body>
 </html>

@@ -14,60 +14,33 @@
 </head>
 
 <body>
-    <div id="bg" class="media-wrapper">
 
-        <div id="top-bar-wrapper">
-            <h1 class="top-bar-txt"> Following </h1>
-            <h1 class="top-bar-txt"> For You </h1>
+    <div id="top-bar-wrapper">
+        <h1 class="top-bar-title">Following</h1>
+        <h1 class="top-bar-title">For You</h1>
+    </div>
+
+    <div id="icons-side-menu">
+        <div class="icon fa fa-circle"></div>
+        <div id="like-button" class="icon fa fa-heart"></div>
+        <div id="comment-button" class="icon fa fa-comment-dots comment-section-element"></div>
+        <div id="save-button" class="icon fa fa-bookmark"></div>
+        <div id="share-button" class="icon fa fa-share"></div>
+    </div>
+
+    <div id="comment-section-wrapper" class="comment-section-element">
+        <div id="comment-section-header" class="comment-section-element">
+            <h1 id="comments-number">Comment: 0</h1>
         </div>
 
-        <!-- <div id="media-wrapper"></div> -->
+        <div id="comments-list-wrapper" class="comment-section-element"></div>
 
-        <div id="side-icons-bar-wrapper">
-            <div id="icons-side-menu">
-                <div class="icon fa fa-circle"></div>
-                <div id="like-button" class="icon fa fa-heart"></div>
-                <div id="comment-button" class="icon fa fa-comment-dots comment-section-element"></div>
-                <div id="save-button" class="icon fa fa-bookmark"></div>
-                <div id="share-button" class="icon fa fa-share"></div>
-            </div>
-        </div>
+    </div>
 
-        <div id="bottom-icons-bar-wrapper">
-            <div class="icon fa fa-house">
-                <h1 class="icon-name">Home</h1>
-            </div>
-
-            <div class="icon fa fa-user-group">
-                <h1 class="icon-name">Friends</h1>
-            </div>
-
-            <div id="plus-btn" class="icon fa fa-plus">
-                <h1 class="icon-name">Plus</h1>
-            </div>
-
-            <div class="icon fa fa-inbox">
-                <h1 class="icon-name">Inbox</h1>
-            </div>
-
-            <div id="user-profile-btn" class="icon fa fa-snowman">
-                <h1 class="icon-name">Profile</h1>
-            </div>
-        </div>
-
-        <div id="comment-section-wrapper" class="comment-section-element closed">
-            <div id="comment-section-element comment-section-header">
-                <h1 id="comments-number">Comment: 0</h1>
-            </div>
-
-            <div id="comments-list-wrapper" class="comment-section-element"></div>
-
-            <div id="comment-section-footer" class="comment-section-element">
-                <div id="comment-input-field-profile-pic" class="comment-section-element"></div>
-                <input type="text" name="enterComment" id="comment-input-field" class="comment-section-element"
-                       placeholder="Add comment...">
-            </div>
-        </div>
+    <div id="comment-section-footer" class="comment-section-element">
+        <div id="comment-input-field-profile-pic" class="comment-section-element"></div>
+        <input type="text" name="enterComment" id="comment-input-field" class="comment-section-element"
+               placeholder="Add comment...">
     </div>
 
     <template id="comment-template">

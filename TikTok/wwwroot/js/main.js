@@ -5,8 +5,7 @@ const saveButton = document.querySelector("#save-button");
 const shareButton = document.querySelector("#share-button");
 
 // Bottom Side
-const userProfileBtn = document.querySelector("#user-profile-btn");
-const plusBtn = document.querySelector("#plus-btn");
+
 
 //Constant string literals
 const clickEnabledClassName = "click-enabled";
@@ -45,24 +44,20 @@ commentInputField.addEventListener("keydown", e => {
 });
 
 const commentSection = document.querySelector("#comment-section-wrapper");
+const commentSectionFooter = document.querySelector("#comment-section-footer");
+console.log(commentSectionFooter);
 const commentsHeaderNumber = document.querySelector("#comments-number");
-let isCommentSectionOpen = false;
 commentButton.addEventListener('click', e => {
     console.log("Comments Opened");
-    if (!isCommentSectionOpen) {
-        UpdateCommentCount();
-
-        commentSection.classList.remove("closed");
-        commentSection.classList.add("open");
-        isCommentSectionOpen = true;
-    }
+    UpdateCommentCount();
+    commentSection.classList.add("open");
+    commentSectionFooter.classList.add("open");
 })
 
 document.addEventListener("click", e => {
-    if (isCommentSectionOpen && !e.target.classList.contains("comment-section-element")) {// !== commentSection && e.target !== commentButton) {
+    if (!e.target.classList.contains("comment-section-element")) {
         commentSection.classList.remove("open");
-        commentSection.classList.add("closed");
-        isCommentSectionOpen = false;
+        commentSectionFooter.classList.remove("open");
     }
 });
 
@@ -79,23 +74,12 @@ saveButton.addEventListener('click', function (e) {
         saveButton.classList.remove(clickEnabledClassName);
         saveButton.classList.add(clickDisabledClassName);
     }
-
 })
 
 shareButton.addEventListener('click', function (e) {
     console.log("Shared");
     shareButton.classList.toggle(clickEnabledClassName);
 });
-
-userProfileBtn.addEventListener('click', function (e) {
-    console.log("Open profile / login");
-});
-
-plusBtn.addEventListener('click', function (e) {
-    console.log("Publish");
-});
-
-
 function UpdateCommentCount() {
     const comments = document.querySelectorAll(".comment-wrapper");
     commentsHeaderNumber.textContent = "Comments: " + comments.length;
