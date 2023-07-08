@@ -43,7 +43,7 @@ body {
 }
 
 .media-wrapper {
-    background-image: url("images/TTBG.jpeg");
+    /*background-image: url("images/TTBG.jpeg");*/
     background-size: cover;
 }
 
