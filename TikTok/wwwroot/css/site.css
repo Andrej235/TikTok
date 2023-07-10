@@ -2,17 +2,21 @@ body {
     padding: 0;
     margin: 0;
     overflow: hidden;
+    background-color: #000;
 }
 
 #bg {
     background-color: #181818;
     height: 100vh;
     aspect-ratio: 9 / 16;
-
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    padding: 0.1vh 0 0 0;
+    margin: 0;
+    border-left: 5px solid #212121;
+    border-right: 5px solid #212121;
 }
 
 #bottom-icons-bar-wrapper {
@@ -21,8 +25,7 @@ body {
     /* background-color: #000; */
 
     position: absolute;
-    top: 100%;
-/*    z-index: 9;*/
+    top: 99%;
     transform: translate(0, -100%);
     display: flex;
     justify-content: space-evenly;
@@ -50,4 +53,192 @@ body {
     font-size: 1vw;
     text-align: center;
     font-family: 'Times New Roman', Times, serif;
+    user-select: none;
+}
+
+
+
+/*Publish*/
+#publish-popup {
+    background-color: #181818;
+    height: 0;
+    aspect-ratio: 9 / 16;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -100%);
+    transition: 300ms;
+}
+
+    #publish-popup.active {
+        height: 100vh;
+    }
+
+        #publish-popup.active h1 {
+            font-size: 2rem;
+        }
+
+        #publish-popup.active * {
+            transition: 300ms;
+            opacity: 1;
+        }
+
+    #publish-popup .photo {
+        height: 75%;
+        aspect-ratio: 9 / 16;
+        background-color: #fff;
+        position: absolute;
+        transform: translate(-50%, 100%);
+        bottom: 96.5%;
+        left: 50%;
+        border-radius: 50px;
+        user-select: none;
+    }
+
+.publish-btn, .random-photo-btn {
+    background-color: #3d3d3d;
+    width: 40%;
+    height: 6%;
+    border-radius: 50px;
+    position: absolute;
+    top: 97.5%;
+    transform: translate(-50%, -100%);
+    cursor: pointer;
+}
+
+    .publish-btn *, .random-photo-btn * {
+        color: #aaa;
+        font-size: 0;
+        margin: 0;
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        user-select: none;
+    }
+
+.publish-btn {
+    left: 75%;
+}
+
+.random-photo-btn {
+    left: 25%;
+}
+
+.caption-input-field {
+    position: absolute;
+    transform: translate(-50%, -100%);
+    top: 89%;
+    left: 50%;
+    border: 3px solid #fff;
+    width: 80%;
+    height: 6%;
+    border-radius: 25px;
+    background-color: #212121;
+    color: #aaa;
+    padding: 0 1em;
+    white-space: break-spaces;
+    font-size: 1.5rem;
+    font-family: 'Times New Roman', Times, serif;
+    opacity: 0;
+}
+
+
+
+/*Profile Popup*/
+#profile-popup {
+    height: 0;
+    aspect-ratio: 9 / 16;
+    background-color: #181818;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -100%);
+}
+
+    #profile-popup, #profile-popup * {
+        transition: 300ms;
+    }
+
+        #profile-popup.active {
+            height: 101vh;
+        }
+
+            #profile-popup.active #profile-name {
+                font-size: 3rem;
+            }
+
+            #profile-popup.active .icon {
+                font-size: 2.25rem;
+            }
+
+            #profile-popup.active .value {
+                font-size: 2rem;
+            }
+
+            #profile-popup.active .category {
+                font-size: 1rem;
+            }
+
+#profile-name {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    font-size: 0;
+    color: #fff;
+    text-align: center;
+}
+
+#basic-info-wrapper {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 7.5%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+}
+
+.info-wrapper {
+    aspect-ratio: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-content: center;
+}
+
+    .info-wrapper .value, .info-wrapper .category, #navigation-menu .icon {
+        text-align: center;
+        font-size: 0;
+        margin: 0;
+    }
+
+    .info-wrapper .value, #navigation-menu .icon {
+        color: #fff;
+    }
+
+        .info-wrapper .category, #navigation-menu .icon:hover {
+            color: #aaa;
+        }
+
+#navigation-menu {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 5.5%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    gap: 2.5%;
+    align-items: center;
+    align-content: center;
+    background-color: #212121;
 }

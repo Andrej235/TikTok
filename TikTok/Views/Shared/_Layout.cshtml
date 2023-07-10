@@ -37,8 +37,43 @@
             </main>
         </div>
     </div>
-    
+
+    <div id="publish-popup">
+        <img class="photo" draggable="false" src="" alt="Image not found" />
+        <input type="text" class="caption-input-field" placeholder="Caption..." />
+        <div class="random-photo-btn">
+            <h1>Random</h1>
+        </div>
+        <div class="publish-btn">
+            <h1>Publish</h1>
+        </div>
+    </div>
+
+    <div id="profile-popup">
+        <h1 id="profile-name"></h1>
+        <div id="basic-info-wrapper">
+            <div class="info-wrapper">
+                <h1 id="posts-info-value" class="value"></h1>
+                <h2 class="category">Posts</h2>
+            </div>
+
+            <div class="info-wrapper">
+                <h1 id="comments-info-value" class="value"></h1>
+                <h2 class="category">Comments</h2>
+            </div>
+
+            <div class="info-wrapper">
+                <h1 id ="likes-info-value" class="value"></h1>
+                <h2 class="category">Likes</h2>
+            </div>
+        </div>
+        <div id="navigation-menu">
+            <div id="published-posts" class="icon fa fa-bars-staggered"></div>
+            <div id="saved-posts" class="icon fa fa-bookmark"></div>
+            <div id="liked-posts" class="icon fa fa-heart"></div>
+        </div>
+    </div>
+
     <script src="~/js/layoutLogic.js"></script>
-    @*@await RenderSectionAsync("Scripts", required: false)*@
 </body>
 </html>

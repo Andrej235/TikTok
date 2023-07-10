@@ -1,17 +1,14 @@
 ﻿// Right Side
-const likeButton = document.querySelector("#like-button");
-const commentButton = document.querySelector("#comment-button");
-const saveButton = document.querySelector("#save-button");
-const shareButton = document.querySelector("#share-button");
-
-// Bottom Side
-
+//const likeButton = document.querySelectorAll(".like-button");
+const commentButtons = document.querySelectorAll(".comment-button");
+//const saveButton = document.querySelectorAll(".save-button");
+//const shareButton = document.querySelectorAll(".share-button");
 
 //Constant string literals
 const clickEnabledClassName = "click-enabled";
 const clickDisabledClassName = "click-disabled";
 
-likeButton.addEventListener('click', function (e) {
+/*likeButton.addEventListener('click', function (e) {
     console.log("Video liked");
     if (!likeButton.classList.contains(clickEnabledClassName)) {
         likeButton.classList.remove(clickDisabledClassName);
@@ -22,48 +19,96 @@ likeButton.addEventListener('click', function (e) {
         likeButton.classList.add(clickDisabledClassName);
     }
 
-})
+})*/
 
 const commentTemplate = document.querySelector("#comment-template");
 const commentsList = document.querySelector("#comments-list-wrapper");
 const commentInputField = document.querySelector("#comment-input-field");
 commentInputField.addEventListener("keydown", e => {
     if (e.key === "Enter" && commentInputField.value !== "") {
-        const commentText = commentInputField.value;
-        const newComment = document.importNode(commentTemplate.content, true);
-        const newCommentProfileName = newComment.querySelector(".profile-name");
-        const newCommentText = newComment.querySelector(".comment-text");
+        const userId = 1;
+        const postId = posts[postShownIndex].id;
+        const commentContent = commentInputField.value;
 
-        newCommentProfileName.append("BaneCane109");
-        newCommentText.textContent = commentText;
+        const options = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(
+                {
+                    "Content": commentContent,
+                    "ParentPost":
+                    {
+                        "Id": postId,
+                        "Caption": " ",
+                        "MediaUrl": " ",
+                        "PostCreator":
+                        {
+                            "Id": -1,
+                            "Name": " ",
+                            "Email": " ",
+                            "Password": " "
+                        }
+                    }, "CommentCreator": {
+                        "Id": userId,
+                        "Name": " ",
+                        "Email": " ",
+                        "Password": " "
+                    }
+                })
+        };
 
-        commentsList.appendChild(newComment);
-        commentInputField.value = "";
-        UpdateCommentCount();
+        fetch('https://localhost:7002/api/comment/publish', options)
+            .then(() => {
+                commentInputField.value = "";
+                UpdateCommentSection()
+            })
+            .catch(err => console.error(err));
     }
 });
 
 const commentSection = document.querySelector("#comment-section-wrapper");
 const commentSectionFooter = document.querySelector("#comment-section-footer");
-console.log(commentSectionFooter);
 const commentsHeaderNumber = document.querySelector("#comments-number");
-commentButton.addEventListener('click', e => {
-    console.log("Comments Opened");
-    UpdateCommentCount();
-    commentSection.classList.add("open");
-    commentSectionFooter.classList.add("open");
+
+commentButtons.forEach(btn => {
+    btn.addEventListener('click', e => {
+        console.log("Comments Opened");
+        UpdateCommentSection();
+        commentSection.classList.add("open");
+        commentSectionFooter.classList.add("open");
+    })
 })
 
-document.addEventListener("click", e => {
-    if (!e.target.classList.contains("comment-section-element")) {
-        commentSection.classList.remove("open");
-        commentSectionFooter.classList.remove("open");
-    }
-});
+async function UpdateCommentSection() {
+    fetch(`https://localhost:7002/api/comment/post/get/${posts[postShownIndex].id}`, {
+        method: 'GET'
+    })
+        .then(response => response.json())
+        .then(comments => {
+            commentsList.innerHTML = "";
+            commentsHeaderNumber.textContent = "Comments: " + comments.length;
 
+            comments.forEach(com => {
+                const newComment = document.importNode(commentTemplate.content, true);
+                const newCommentProfileName = newComment.querySelector(".profile-name");
+                const newCommentText = newComment.querySelector(".comment-text");
 
+                fetch(`https://localhost:7002/api/user/get/${com.commentCreatorId}`, {
+                    method: 'GET'
+                })
+                    .then(response => response.json())
+                    .then(user => newCommentProfileName.innerText = user.name)
+                    .catch(err => console.error(err));
 
-saveButton.addEventListener('click', function (e) {
+                newCommentText.textContent = com.content;
+
+                commentsList.appendChild(newComment);
+            })
+        })
+        .catch(err => console.error(err));
+}
+
+/*saveButton.addEventListener('click', function (e) {
     console.log("Saved");
 
     if (!saveButton.classList.contains(clickEnabledClassName)) {
@@ -74,13 +119,109 @@ saveButton.addEventListener('click', function (e) {
         saveButton.classList.remove(clickEnabledClassName);
         saveButton.classList.add(clickDisabledClassName);
     }
-})
+})*/
 
-shareButton.addEventListener('click', function (e) {
-    console.log("Shared");
-    shareButton.classList.toggle(clickEnabledClassName);
-});
-function UpdateCommentCount() {
-    const comments = document.querySelectorAll(".comment-wrapper");
-    commentsHeaderNumber.textContent = "Comments: " + comments.length;
+//shareButton.addEventListener('click', function (e) {
+//    console.log("Shared");
+//    shareButton.classList.toggle(clickEnabledClassName);
+//});
+
+
+
+//Scrolling
+let mediaWrapper_Previous = document.querySelector(".media-wrapper.previous");
+let mediaWrapper_Active = document.querySelector(".media-wrapper.active");
+let mediaWrapper_Next = document.querySelector(".media-wrapper.next");
+
+function ShowNextMedia() {
+    if (postShownIndex >= posts.length - 1)
+        return;
+    postShownIndex++;
+
+    const next = mediaWrapper_Next;
+    mediaWrapper_Next = mediaWrapper_Previous;
+    mediaWrapper_Previous = mediaWrapper_Active;
+    mediaWrapper_Active = next;
+
+    mediaWrapper_Next.classList.remove("previous");
+    mediaWrapper_Next.classList.add("next");
+
+    mediaWrapper_Active.classList.remove("next");
+    mediaWrapper_Active.classList.add("active");
+
+    mediaWrapper_Previous.classList.remove("active");
+    mediaWrapper_Previous.classList.add("previous");
+
+    const postId = postShownIndex + 1 < posts.length ? postShownIndex + 1 : 0;
+    mediaWrapper_Next.querySelector(".photo").src = posts[postId].mediaUrl;
+    //mediaWrapper_Active.querySelector(".photo").src = posts[postShownIndex].mediaUrl;
 }
+
+function ShowPreviousMedia() {
+    if (postShownIndex <= 0)
+        return;
+    postShownIndex--;
+
+    const next = mediaWrapper_Next;
+    mediaWrapper_Next = mediaWrapper_Active;
+    mediaWrapper_Active = mediaWrapper_Previous;
+    mediaWrapper_Previous = next;
+
+    mediaWrapper_Next.classList.remove("active");
+    mediaWrapper_Next.classList.add("next");
+
+    mediaWrapper_Active.classList.remove("previous");
+    mediaWrapper_Active.classList.add("active");
+
+    mediaWrapper_Previous.classList.remove("next");
+    mediaWrapper_Previous.classList.add("previous");
+
+    const postId = postShownIndex - 1 > 0 ? postShownIndex - 1 : 0;
+    mediaWrapper_Previous.querySelector(".photo").src = posts[postId].mediaUrl;
+    //mediaWrapper_Active.querySelector(".photo").src = posts[postShownIndex].mediaUrl;
+}
+
+const posts = [];
+let postShownIndex = 0;
+async function GetAllPosts() {
+    const options = { method: 'GET' };
+
+    return fetch('https://localhost:7002/api/post/getall', options)
+        .then(response => response.json())
+        .then(response => {
+            response.forEach((post, i) => {
+                posts[i] = post;
+            });
+            console.log(posts);
+        })
+        .catch(err => console.error(err));
+}
+
+
+
+//Document event listeners and calling of main functions
+document.addEventListener("click", e => {
+    if (!e.target.classList.contains("comment-section-element")) {
+        commentSection.classList.remove("open");
+        commentSectionFooter.classList.remove("open");
+    }
+});
+
+document.addEventListener("keydown", e => {
+    if (e.key === 'Escape') {
+        commentSection.classList.remove("open");
+        commentSectionFooter.classList.remove("open");
+    }
+    else if (e.key === 'ArrowDown') {
+        ShowNextMedia();
+    }
+    else if (e.key === 'ArrowUp') {
+        ShowPreviousMedia();
+    }
+});
+
+GetAllPosts().then(() => {
+    mediaWrapper_Previous.querySelector(".photo").src = posts[0].mediaUrl;
+    mediaWrapper_Active.querySelector(".photo").src = posts[0].mediaUrl;
+    mediaWrapper_Next.querySelector(".photo").src = posts[1].mediaUrl;
+});

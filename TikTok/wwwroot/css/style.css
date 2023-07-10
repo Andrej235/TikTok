@@ -24,12 +24,37 @@ body {
     color: white;
     font-family: 'Times New Roman', Times, serif;
     cursor: pointer;
+    user-select: none;
 }
 
 .media-wrapper {
-    /*background-image: url("images/TTBG.jpeg");*/
-    background-size: cover;
+    height: 100vh;
+    aspect-ratio: 9 / 16;
+    position: absolute;
+    transition: 500ms ease-in-out;
+    z-index: -10;
+    opacity: 0;
 }
+
+    .media-wrapper.active {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+
+    .media-wrapper.previous {
+        transform: translate(0, -100%);
+    }
+
+    .media-wrapper.next {
+        transform: translate(0, 100%);
+    }
+
+    .media-wrapper .photo {
+        position: relative;
+        z-index: -9;
+        width: 100%;
+        height: 100%;
+    }
 
 #side-icons-bar-wrapper {
     position: absolute;
@@ -44,7 +69,7 @@ body {
     align-items: flex-end;
 }
 
-#icons-side-menu {
+.icons-side-menu {
     position: absolute;
     transform: translate(-100%, -50%);
     top: 60%;
@@ -59,14 +84,14 @@ body {
     align-items: center;
 }
 
-    #icons-side-menu .icon:nth-child(1) {
+    .icons-side-menu .icon:nth-child(1) {
         width: 4.125vw;
         height: 4.125vw;
         line-height: 4.125vw;
         font-size: 3.3vw;
     }
 
-    #icons-side-menu .icon {
+    .icons-side-menu .icon {
         color: #fff;
         /* background-color:black; */
 
@@ -80,25 +105,22 @@ body {
         cursor: pointer;
     }
 
-#like-button.click-enabled {
+.like-button.click-enabled {
     animation: likeAnimation 0.25s linear 0s 1 normal forwards;
 }
 
-#like-button.click-disabled {
+.like-button.click-disabled {
     animation: unLikeAnimation 0.25s linear 0s 1 normal forwards;
 }
 
-#save-button.click-enabled {
+.save-button.click-enabled {
     animation: saveAnimation 0.25s linear 0s 1 normal forwards;
-}
-
-#save-button.click-disabled {
-    animation: unSaveAnimation 0.25s linear 0s 1 normal forwards;
-}
-
-#share-button.click-enabled {
     transition: 0.35s;
     transform: rotate(360deg);
+}
+
+.save-button.click-disabled {
+    animation: unSaveAnimation 0.25s linear 0s 1 normal forwards;
 }
 
 @keyframes likeAnimation {
@@ -186,11 +208,11 @@ body {
     overflow-x: hidden;
     overflow-y: scroll;
     white-space: nowrap;
-    transition: 0.5s;
+    transition: 300ms;
 }
 
     #comment-section-wrapper *, #comment-section-footer, #comment-section-footer * {
-        transition: 0.33s;
+        transition: 225ms;
     }
 
     #comment-section-wrapper.open {
@@ -261,6 +283,7 @@ body {
     align-content: flex-start;
 }
 
+/*.comment-wrapper, .comment-wrapper * {border: 1px solid red}*/
 .comment-wrapper {
     margin: 0;
     width: 100%;
@@ -274,8 +297,8 @@ body {
     width: 3vw;
     height: 3vw;
     border-radius: 100%;
-    background-color: #646462;
-    margin: 0;
+    background-color: #646464;
+    margin: 0 0 0 0.33vw;
 }
 
 .profile-name {
@@ -299,25 +322,26 @@ body {
     min-width: 20.5vw;
     max-width: 21vw;
     position: relative;
+    width: 85%;
+    height: 75%;
+    margin: 0;
+    /**/
+
     left: 15.5%;
     top: 0%;
     transform: translate(0, -29%);
-    width: 85%;
-    height: 75%;
-    line-height: 100%;
-    text-align: left;
-    vertical-align: text-top;
-    word-wrap: break-word;
-    font-size: 1.25vw;
     color: #000;
+    font-size: 1.25vw;
+    text-align: left;
     overflow: hidden;
-    /* border: 1px solid red; */
-    margin: 0;
+    white-space: break-spaces;
+    word-wrap: break-word;
 }
 
 #comment-section-footer {
     width: 100%;
     height: 0;
+    background-color: #fff;
     position: fixed;
     transform: translate(0%, -100%);
     top: 100%;
