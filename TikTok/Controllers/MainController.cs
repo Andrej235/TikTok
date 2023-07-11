@@ -71,6 +71,17 @@ namespace TikTok.Controllers
             await context.SaveChangesAsync();
             return Ok(user);
         }
+
+        [Route("api/user/login")]
+        [HttpPut]
+        public async Task<IActionResult> LogIn([FromBody] UserLogInDTO logInInfo)
+        {
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Email == logInInfo.Email);
+            if (user == null)
+                return NotFound("User not found");
+
+            return Ok(user.Password == logInInfo.Password ? user.Id : 0);
+        }
         #endregion
 
         #region api/post/
@@ -503,6 +514,12 @@ namespace TikTok.Controllers
     public class StringDTO
     {
         public string Value { get; set; } = null!;
+    }
+
+    public class UserLogInDTO
+    {
+        public string Email { get; set; } = null!;
+        public string Password { get; set; } = null!;
     }
 
     public class PostLikeInfoDTO

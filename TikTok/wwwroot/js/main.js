@@ -1,5 +1,7 @@
-﻿// Right Side
-//const likeButton = document.querySelectorAll(".like-button");
+﻿//const userId = 1; --- Somehow defined in layoutLogic.js and works here
+
+// Right Side
+const likeButtons = document.querySelectorAll(".like-button");
 const commentButtons = document.querySelectorAll(".comment-button");
 //const saveButton = document.querySelectorAll(".save-button");
 //const shareButton = document.querySelectorAll(".share-button");
@@ -8,25 +10,39 @@ const commentButtons = document.querySelectorAll(".comment-button");
 const clickEnabledClassName = "click-enabled";
 const clickDisabledClassName = "click-disabled";
 
-/*likeButton.addEventListener('click', function (e) {
-    console.log("Video liked");
-    if (!likeButton.classList.contains(clickEnabledClassName)) {
-        likeButton.classList.remove(clickDisabledClassName);
-        likeButton.classList.add(clickEnabledClassName);
-    }
-    else {
-        likeButton.classList.remove(clickEnabledClassName);
-        likeButton.classList.add(clickDisabledClassName);
-    }
+likeButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const apiEndpoint = btn.classList.contains(clickEnabledClassName) ? 'https://localhost:7002/api/post/unlike' : 'https://localhost:7002/api/post/like';
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                UserId: userId,
+                PostId: posts[postShownIndex].id
+            })
+        };
 
-})*/
+        fetch(apiEndpoint, options)
+            .catch(err => console.error(err));
+
+        btn.classList.contains(clickEnabledClassName) ? UnlikePostVisualUpdate() : posts[postShownIndex].postLikeIds[posts[postShownIndex].postLikeIds.length] = userId;
+        btn.classList.toggle(clickEnabledClassName);
+    })
+})
+async function UnlikePostVisualUpdate() {
+    posts[postShownIndex].postLikeIds.forEach((id, i) => {
+        if (id == userId)
+            posts[postShownIndex].postLikeIds[i] = 0;
+    })
+}
 
 const commentTemplate = document.querySelector("#comment-template");
 const commentsList = document.querySelector("#comments-list-wrapper");
 const commentInputField = document.querySelector("#comment-input-field");
 commentInputField.addEventListener("keydown", e => {
     if (e.key === "Enter" && commentInputField.value !== "") {
-        const userId = 1;
         const postId = posts[postShownIndex].id;
         const commentContent = commentInputField.value;
 
@@ -154,7 +170,7 @@ function ShowNextMedia() {
 
     const postId = postShownIndex + 1 < posts.length ? postShownIndex + 1 : 0;
     mediaWrapper_Next.querySelector(".photo").src = posts[postId].mediaUrl;
-    //mediaWrapper_Active.querySelector(".photo").src = posts[postShownIndex].mediaUrl;
+    UpdateLikeOnCurrentPost();
 }
 
 function ShowPreviousMedia() {
@@ -178,7 +194,7 @@ function ShowPreviousMedia() {
 
     const postId = postShownIndex - 1 > 0 ? postShownIndex - 1 : 0;
     mediaWrapper_Previous.querySelector(".photo").src = posts[postId].mediaUrl;
-    //mediaWrapper_Active.querySelector(".photo").src = posts[postShownIndex].mediaUrl;
+    UpdateLikeOnCurrentPost();
 }
 
 const posts = [];
@@ -193,8 +209,24 @@ async function GetAllPosts() {
                 posts[i] = post;
             });
             console.log(posts);
+            UpdateLikeOnCurrentPost();
         })
         .catch(err => console.error(err));
+}
+
+async function UpdateLikeOnCurrentPost() {
+    let isLiked = false;
+    for (var i = 0; i < posts[postShownIndex].postLikeIds.length; i++) {
+        if (posts[postShownIndex].postLikeIds[i] == userId) {
+            isLiked = true;
+            break;
+        }
+    }
+
+    if (isLiked)
+        mediaWrapper_Active.querySelector(".like-button").classList.add(clickEnabledClassName);
+    else
+        mediaWrapper_Active.querySelector(".like-button").classList.remove(clickEnabledClassName);
 }
 
 

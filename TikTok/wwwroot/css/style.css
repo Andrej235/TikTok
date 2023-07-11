@@ -109,7 +109,7 @@ body {
     animation: likeAnimation 0.25s linear 0s 1 normal forwards;
 }
 
-.like-button.click-disabled {
+.like-button:not(.click-enabled) {
     animation: unLikeAnimation 0.25s linear 0s 1 normal forwards;
 }
 

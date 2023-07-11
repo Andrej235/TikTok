@@ -63,7 +63,7 @@
             </div>
 
             <div class="info-wrapper">
-                <h1 id ="likes-info-value" class="value"></h1>
+                <h1 id="likes-info-value" class="value"></h1>
                 <h2 class="category">Likes</h2>
             </div>
         </div>
@@ -72,7 +72,27 @@
             <div id="saved-posts" class="icon fa fa-bookmark"></div>
             <div id="liked-posts" class="icon fa fa-heart"></div>
         </div>
+        <div id="post-grid"></div>
+
+        <div id="log-out-btn" class="fa-solid fa-arrow-right-from-bracket"></div>
+
+        <div id="log-in-screen">
+            <h1 id="log-in-title">Login</h1>
+            <div id="input-fields-wrapper">
+                <input id="email-field" class="input-field" type="text" placeholder="Email" />
+                <input id="password-field" class="input-field" type="password" placeholder="Password" />
+            </div>
+            <div id="log-in-btn" class="fa-solid fa-arrow-right-to-bracket"></div>
+        </div>
     </div>
+
+    <template id="post-box-row-template">
+        <div class="post-box-row"></div>
+    </template>
+
+    <template id="post-box-image-template">
+        <img src="" alt="Image not found" class="post-box-image" />
+    </template>
 
     <script src="~/js/layoutLogic.js"></script>
 </body>
