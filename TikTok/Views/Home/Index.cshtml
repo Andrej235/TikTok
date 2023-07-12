@@ -68,18 +68,17 @@
 
     </div>
     <div id="comment-section-footer" class="comment-section-element">
-        <div id="comment-input-field-profile-pic" class="comment-section-element"></div>
-        <input type="text" name="enterComment" id="comment-input-field" class="comment-section-element"
-               placeholder="Add comment...">
+        <input type="text" id="comment-input-field" class="comment-section-element" placeholder="Add comment...">
+        <div id="publish-comment-btn" class="comment-section-element fa fa-chevron-right"></div>
     </div>
 
     <template id="comment-template">
         <div class="comment-section-element comment-wrapper">
-            <div class="comment-section-element profile-pic">
+            <div class="comment-section-element comment-header">
+                <div class="comment-section-element fa fa-heart comment-like-btn"></div>
                 <p class="comment-section-element profile-name"></p>
             </div>
             <p class="comment-section-element comment-text"></p>
-            <div class="comment-section-element comment-like-btn"></div>
         </div>
     </template>
     <script src="~/js/main.js"></script>

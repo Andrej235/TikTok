@@ -25,6 +25,13 @@ const logInEmailInputField = profileLogInScreen.querySelector("#email-field");
 const logInPasswordInputField = profileLogInScreen.querySelector("#password-field");
 const logInBtn = profileLogInScreen.querySelector("#log-in-btn");
 
+let registerFieldsActive = false;
+const logInPageStateChageBtn = profileLogInScreen.querySelector("#register-change-state-btn");
+const registerNameInputField = profileLogInScreen.querySelector("#name-field");
+const registerRepeatPasswordInputField = profileLogInScreen.querySelector("#repeat-password-field");
+const logInTitle = profileLogInScreen.querySelector("#log-in-title");
+
+
 userProfileBtn.addEventListener('click', () => {
     isProfilePageOpen = true;
     profilePage.classList.add("active");
@@ -124,37 +131,79 @@ logInBtn.addEventListener("click", () => {
         console.log(`Already logged in as id: ${userId}.`);
         return;
     }
+    if (!registerFieldsActive) {
+        if (logInEmailInputField.value !== "" && logInPasswordInputField.value !== "") {
 
-    if (logInEmailInputField.value !== "" && logInPasswordInputField.value !== "") {
+            const options = {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    Email: logInEmailInputField.value,
+                    Password: logInPasswordInputField.value
+                })
+            };
 
-        const options = {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                Email: logInEmailInputField.value,
-                Password: logInPasswordInputField.value
-            })
-        };
+            fetch('https://localhost:7002/api/user/login', options)
+                .then(response => response.json())
+                .then(id => {
+                    if (id === 0) {
+                        console.log("Invalid login info");
+                        return;
+                    }
 
-        fetch('https://localhost:7002/api/user/login', options)
-            .then(response => response.json())
-            .then(id => {
-                if (id === 0) {
-                    console.log("Invalid login info");
-                    return;
-                }
+                    userId = id;
+                    document.cookie = `userId = ${id}`;
+                    console.log("Logged in");
+                    console.log(id)
+                    profileLogInScreen.classList.remove("active");
+                    UpdateProfileInfo();
+                    GetAllPosts();
+                })
+                .catch(err => console.error(err));
+        }
+    }
+    else {
+        if (registerNameInputField.value !== "" && logInEmailInputField.value !== "" && logInPasswordInputField.value !== "" && logInPasswordInputField.value === registerRepeatPasswordInputField.value) {
+            const options = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    Name: registerNameInputField.value,
+                    Email: logInEmailInputField.value,
+                    Password: logInPasswordInputField.value
+                })
+            };
 
-                userId = id;
-                document.cookie = `userId = ${id}`;
-                console.log("Logged in");
-                console.log(id)
-                profileLogInScreen.classList.remove("active");
-                UpdateProfileInfo();
-                GetAllPosts();
-            })
-            .catch(err => console.error(err));
+            fetch('https://localhost:7002/api/user/create', options)
+                .then(response => response.json())
+                .then(user => {
+                    if (user.id === undefined) {
+                        console.log(logInEmailInputField.value);
+                        return;
+                    }
+                    else {
+                        console.log("Registered");
+                    }
+                    userId = user.id;
+                    document.cookie = `userId = ${user.id}`;
+                    console.log(user.id)
+                    profileLogInScreen.classList.remove("active");
+                    UpdateProfileInfo();
+                    GetAllPosts();
+                })
+                .catch(err => console.error(err));
+        }
     }
 })
+
+logInPageStateChageBtn.addEventListener("click", () => {
+    registerFieldsActive = !registerFieldsActive;
+    logInBtn.querySelector("h1").innerText = registerFieldsActive ? "Register" : "Login";
+    logInTitle.innerText = registerFieldsActive ? "Register" : "Login";
+    logInPageStateChageBtn.innerText = registerFieldsActive ? "Login" : "Register";
+    registerNameInputField.classList.toggle("active");
+    registerRepeatPasswordInputField.classList.toggle("active");
+});
 
 //Publishing
 const publishPopup = document.querySelector("#publish-popup");
@@ -203,6 +252,11 @@ function AssignRandomImage() {
 
 //Publish button logic
 publishBtn.addEventListener('click', () => {
+    if (userId === undefined || userId == 0) {
+        console.log("User has to be logged in to be able to publish posts");
+        return;
+    }
+
     const options = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

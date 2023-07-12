@@ -65,16 +65,26 @@ namespace TikTok.Controllers
 
         [Route("api/user/create")]
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] User user)
+        public async Task<IActionResult> CreateUser([FromBody] RegisterInfoDTO registerInfo)
         {
-            context.Users.Add(user);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Email == registerInfo.Email);
+            if (user != null)
+                return BadRequest("User with email " + registerInfo.Email + " already exists");
+
+            User newUser = new()
+            {
+                Name = registerInfo.Name,
+                Email = registerInfo.Email,
+                Password = registerInfo.Password
+            };
+            context.Users.Add(newUser);
             await context.SaveChangesAsync();
-            return Ok(user);
+            return Ok(newUser);
         }
 
         [Route("api/user/login")]
         [HttpPut]
-        public async Task<IActionResult> LogIn([FromBody] UserLogInDTO logInInfo)
+        public async Task<IActionResult> LogIn([FromBody] LogInInfoDTO logInInfo)
         {
             var user = await context.Users.FirstOrDefaultAsync(u => u.Email == logInInfo.Email);
             if (user == null)
@@ -516,8 +526,15 @@ namespace TikTok.Controllers
         public string Value { get; set; } = null!;
     }
 
-    public class UserLogInDTO
+    public class LogInInfoDTO
     {
+        public string Email { get; set; } = null!;
+        public string Password { get; set; } = null!;
+    }
+
+    public class RegisterInfoDTO
+    {
+        public string Name { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
     }

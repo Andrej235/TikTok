@@ -7,12 +7,16 @@ const commentButtons = document.querySelectorAll(".comment-button");
 //const shareButton = document.querySelectorAll(".share-button");
 
 //Constant string literals
-const clickEnabledClassName = "click-enabled";
-const clickDisabledClassName = "click-disabled";
+const btnEnabledAnimationClass = "click-enabled";
 
 likeButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-        const apiEndpoint = btn.classList.contains(clickEnabledClassName) ? 'https://localhost:7002/api/post/unlike' : 'https://localhost:7002/api/post/like';
+        if (userId === undefined || userId == 0) {
+            console.log("User has to be logged in to be able to like posts");
+            return;
+        }
+
+        const apiEndpoint = btn.classList.contains(btnEnabledAnimationClass) ? 'https://localhost:7002/api/post/unlike' : 'https://localhost:7002/api/post/like';
         const options = {
             method: 'PUT',
             headers: {
@@ -27,8 +31,8 @@ likeButtons.forEach(btn => {
         fetch(apiEndpoint, options)
             .catch(err => console.error(err));
 
-        btn.classList.contains(clickEnabledClassName) ? UnlikePostVisualUpdate() : posts[postShownIndex].postLikeIds[posts[postShownIndex].postLikeIds.length] = userId;
-        btn.classList.toggle(clickEnabledClassName);
+        btn.classList.contains(btnEnabledAnimationClass) ? UnlikePostVisualUpdate() : posts[postShownIndex].postLikeIds[posts[postShownIndex].postLikeIds.length] = userId;
+        btn.classList.toggle(btnEnabledAnimationClass);
     })
 })
 async function UnlikePostVisualUpdate() {
@@ -41,8 +45,21 @@ async function UnlikePostVisualUpdate() {
 const commentTemplate = document.querySelector("#comment-template");
 const commentsList = document.querySelector("#comments-list-wrapper");
 const commentInputField = document.querySelector("#comment-input-field");
+const commentPublishBtn = document.querySelector("#publish-comment-btn");
 commentInputField.addEventListener("keydown", e => {
-    if (e.key === "Enter" && commentInputField.value !== "") {
+    if (e.key === "Enter")
+        PublishComment();
+});
+
+commentPublishBtn.addEventListener("click", () => PublishComment());
+
+function PublishComment() {
+    if (commentInputField.value !== "") {
+        if (userId === undefined || userId == 0) {
+            console.log("User has to be logged in to be able to publish comments");
+            return;
+        }
+
         const postId = posts[postShownIndex].id;
         const commentContent = commentInputField.value;
 
@@ -80,7 +97,7 @@ commentInputField.addEventListener("keydown", e => {
             })
             .catch(err => console.error(err));
     }
-});
+}
 
 const commentSection = document.querySelector("#comment-section-wrapper");
 const commentSectionFooter = document.querySelector("#comment-section-footer");
@@ -88,7 +105,6 @@ const commentsHeaderNumber = document.querySelector("#comments-number");
 
 commentButtons.forEach(btn => {
     btn.addEventListener('click', e => {
-        console.log("Comments Opened");
         UpdateCommentSection();
         commentSection.classList.add("open");
         commentSectionFooter.classList.add("open");
@@ -127,19 +143,19 @@ async function UpdateCommentSection() {
 /*saveButton.addEventListener('click', function (e) {
     console.log("Saved");
 
-    if (!saveButton.classList.contains(clickEnabledClassName)) {
+    if (!saveButton.classList.contains(btnEnabledAnimationClass)) {
         saveButton.classList.remove(clickDisabledClassName);
-        saveButton.classList.add(clickEnabledClassName);
+        saveButton.classList.add(btnEnabledAnimationClass);
     }
     else {
-        saveButton.classList.remove(clickEnabledClassName);
+        saveButton.classList.remove(btnEnabledAnimationClass);
         saveButton.classList.add(clickDisabledClassName);
     }
 })*/
 
 //shareButton.addEventListener('click', function (e) {
 //    console.log("Shared");
-//    shareButton.classList.toggle(clickEnabledClassName);
+//    shareButton.classList.toggle(btnEnabledAnimationClass);
 //});
 
 
@@ -215,6 +231,9 @@ async function GetAllPosts() {
 }
 
 async function UpdateLikeOnCurrentPost() {
+    if (userId === undefined || userId == 0)
+        return;
+
     let isLiked = false;
     for (var i = 0; i < posts[postShownIndex].postLikeIds.length; i++) {
         if (posts[postShownIndex].postLikeIds[i] == userId) {
@@ -224,9 +243,9 @@ async function UpdateLikeOnCurrentPost() {
     }
 
     if (isLiked)
-        mediaWrapper_Active.querySelector(".like-button").classList.add(clickEnabledClassName);
+        mediaWrapper_Active.querySelector(".like-button").classList.add(btnEnabledAnimationClass);
     else
-        mediaWrapper_Active.querySelector(".like-button").classList.remove(clickEnabledClassName);
+        mediaWrapper_Active.querySelector(".like-button").classList.remove(btnEnabledAnimationClass);
 }
 
 

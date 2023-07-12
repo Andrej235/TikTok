@@ -196,7 +196,7 @@ body {
 #comment-section-wrapper {
     width: 100%;
     height: 0vh;
-    background-color: #fff;
+    background-color: #181818;
     position: absolute;
     left: 50%;
     top: 100%;
@@ -216,7 +216,8 @@ body {
     }
 
     #comment-section-wrapper.open {
-        height: 60vh;
+        height: 65vh;
+        top: 95%;
     }
 
         #comment-section-wrapper.open #comment-section-header {
@@ -235,18 +236,14 @@ body {
     height: 7vh;
 }
 
-    #comment-section-footer.open #comment-input-field {
-        height: 60%;
-    }
-
-    #comment-section-footer.open #comment-input-field-profile-pic, #comment-section-footer.open #comment-input-field {
+    #comment-section-footer.open #comment-input-field, #comment-section-footer.open #publish-comment-btn {
         opacity: 1;
     }
 
 #comment-section-header {
     width: 100%;
     height: 0vh;
-    background-color: #fff;
+    background-color: #181818;
     position: relative;
     transform: translate(0%, 0);
     top: 10%;
@@ -264,18 +261,16 @@ body {
     vertical-align: middle;
     opacity: 0;
     margin: 0;
+    color: #fff;
 }
 
 #comments-list-wrapper {
     position: relative;
-    top: 0;
     left: 50%;
     transform: translate(-50%, 0);
     width: 100%;
     height: 100%;
     padding: 0;
-    /* background-color: #000; */
-
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -287,87 +282,79 @@ body {
 .comment-wrapper {
     margin: 0;
     width: 100%;
-    height: fit-content;
     max-height: 25%;
-    /* background-color: #000; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin: 0 0 0 0.5vw;
 }
 
-.profile-pic {
+.comment-header {
     position: relative;
-    width: 3vw;
-    height: 3vw;
-    border-radius: 100%;
-    background-color: #646464;
-    margin: 0 0 0 0.33vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.comment-like-btn {
+    font-size: 2rem;
+    color: #fff;
+    cursor: pointer;
 }
 
 .profile-name {
-    position: relative;
-    left: 133%;
-    top: 0%;
-    width: 15vw;
-    height: 2vh;
-    line-height: 100%;
     text-align: left;
     vertical-align: middle;
     font-size: 1vw;
-    color: #000;
     word-wrap: normal;
-    margin: 0;
+    margin: 0 0 0 0.33vw;
+    color: #aaa;
 }
 
 .comment-text {
-    min-height: 12vh;
-    max-height: 12.5vh;
-    min-width: 20.5vw;
-    max-width: 21vw;
-    position: relative;
-    width: 85%;
-    height: 75%;
+    min-height: 7vh;
     margin: 0;
-    /**/
-
-    left: 15.5%;
-    top: 0%;
-    transform: translate(0, -29%);
-    color: #000;
+    color: #aaa;
     font-size: 1.25vw;
     text-align: left;
     overflow: hidden;
     white-space: break-spaces;
     word-wrap: break-word;
+    margin: 0.33vw 0 0 0;
 }
 
 #comment-section-footer {
     width: 100%;
     height: 0;
-    background-color: #fff;
+    background-color: #181818;
     position: fixed;
     transform: translate(0%, -100%);
     top: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
 }
 
-#comment-input-field-profile-pic {
-    height: 65%;
-    aspect-ratio: 1;
-    border-radius: 100%;
-    background-color: blue;
+#publish-comment-btn {
     margin: 0 1vw;
+    color: #fff;
+    font-size: 3rem;
+    margin: 0 1.25rem 0 0.5rem;
+    cursor: pointer;
     opacity: 0;
 }
 
 #comment-input-field {
-    width: 80%;
+    width: 70%;
     height: 60%;
-    border-radius: 10vw;
-    padding: 0rem 1rem;
+    border-radius: 100px;
+    padding: 0.075em 1em;
     background-color: #ccc;
-    margin: 0 1vw;
     color: #fff;
     font-size: 1.25rem;
     border: 3px solid #aaa;
+    margin: 0 0.5rem 0 1.25rem;
     opacity: 0;
 }
