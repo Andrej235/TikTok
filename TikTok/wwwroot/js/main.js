@@ -1,10 +1,6 @@
-﻿//const userId = 1; --- Somehow defined in layoutLogic.js and works here
-
-// Right Side
+﻿// Right Side
 const likeButtons = document.querySelectorAll(".like-button");
 const commentButtons = document.querySelectorAll(".comment-button");
-//const saveButton = document.querySelectorAll(".save-button");
-//const shareButton = document.querySelectorAll(".share-button");
 
 //Constant string literals
 const btnEnabledAnimationClass = "click-enabled";
@@ -117,13 +113,13 @@ async function UpdateCommentSection() {
     })
         .then(response => response.json())
         .then(comments => {
+            const commentsLikeIds = comments.map(c => c.commentLikeIds);
             commentsList.innerHTML = "";
             commentsHeaderNumber.textContent = "Comments: " + comments.length;
 
-            comments.forEach(com => {
+            comments.forEach((com, i) => {
                 const newComment = document.importNode(commentTemplate.content, true);
                 const newCommentProfileName = newComment.querySelector(".profile-name");
-                const newCommentText = newComment.querySelector(".comment-text");
 
                 fetch(`https://localhost:7002/api/user/get/${com.commentCreatorId}`, {
                     method: 'GET'
@@ -132,31 +128,98 @@ async function UpdateCommentSection() {
                     .then(user => newCommentProfileName.innerText = user.name)
                     .catch(err => console.error(err));
 
-                newCommentText.textContent = com.content;
+
+                fetch('https://localhost:7002/api/post/get/3', {
+                    method: 'GET'
+                })
+                    .then(response => response.json())
+                    .then(parentPost => {
+                        if (commentsLikeIds[i].includes(parentPost.postCreatorId))
+                            newCommentProfileName.classList.add("liked-by-post-creator");
+                    })
+                    .catch(err => console.error(err));
+
+
+                const newCommentLikeBtn = newComment.querySelector(".comment-like-btn");
+                for (var j = 0; j < commentsLikeIds[i].length; j++) {
+                    if (commentsLikeIds[i][j] == userId) {
+                        newCommentLikeBtn.classList.add(btnEnabledAnimationClass);
+                        break;
+                    }
+                }
+
+                newCommentLikeBtn.addEventListener("click", () => {
+                    newCommentLikeBtn.classList.toggle(btnEnabledAnimationClass);
+                    const options = {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            UserId: userId,
+                            CommentId: com.id
+                        })
+                    };
+
+                    const isLiking = newCommentLikeBtn.classList.contains(btnEnabledAnimationClass);
+                    fetch(`https://localhost:7002/api/comment/${isLiking ? "like" : "unlike"}`, options)
+                        .then(() => {
+                            const likesTextContent = newCommentLikeBtn.querySelector("h1").textContent;
+                            let numOfLikes = !isNaN(parseInt(likesTextContent)) ? parseInt(likesTextContent) : 0;
+
+                            numOfLikes = isNaN(numOfLikes) ? 0 :
+                                isLiking ? numOfLikes + 1 : numOfLikes - 1;
+
+                            newCommentLikeBtn.querySelector("h1").textContent = numOfLikes !== 0 ? numOfLikes : "";
+
+                            fetch('https://localhost:7002/api/post/get/3', {
+                                method: 'GET'
+                            })
+                                .then(response => response.json())
+                                .then(parentPost => {
+                                    if (parentPost.postCreatorId == userId)
+                                        if (isLiking)
+                                            newCommentProfileName.classList.add("liked-by-post-creator");
+                                        else
+                                            newCommentProfileName.classList.remove("liked-by-post-creator");
+                                })
+                                .catch(err => console.error(err));
+                        })
+                        .catch(err => console.error(err));
+                });
+
+                const newCommentContent = newComment.querySelector(".comment-text");
+                newCommentLikeBtn.querySelector("h1").textContent = commentsLikeIds[i].length > 0 ? commentsLikeIds[i].length : "";
+                newCommentContent.textContent = com.content;
+
+                if (com.commentCreatorId == userId) {
+                    newCommentEditBtn = newComment.querySelector(".comment-edit-btn");
+                    newCommentEditBtn.classList.add("active");
+
+                    const uneditedComment = newCommentContent.innerText;
+                    newCommentEditBtn.addEventListener("click", () => {
+                        if (newCommentContent.contentEditable != 'true') {
+                            console.log("Edit comment + " + com.id);
+                            newCommentContent.contentEditable = true;
+                        }
+                        else {
+                            if (newCommentContent.innerText !== uneditedComment) {
+                                console.log("User edited their comment");
+                                //TODO: Connect to db
+                            }
+                            else {
+                                console.log("User canceled editing their comment");
+                            }
+                            newCommentContent.contentEditable = false;
+                        }
+                    });
+                }
 
                 commentsList.appendChild(newComment);
             })
         })
         .catch(err => console.error(err));
 }
-
-/*saveButton.addEventListener('click', function (e) {
-    console.log("Saved");
-
-    if (!saveButton.classList.contains(btnEnabledAnimationClass)) {
-        saveButton.classList.remove(clickDisabledClassName);
-        saveButton.classList.add(btnEnabledAnimationClass);
-    }
-    else {
-        saveButton.classList.remove(btnEnabledAnimationClass);
-        saveButton.classList.add(clickDisabledClassName);
-    }
-})*/
-
-//shareButton.addEventListener('click', function (e) {
-//    console.log("Shared");
-//    shareButton.classList.toggle(btnEnabledAnimationClass);
-//});
 
 
 
@@ -186,6 +249,16 @@ function ShowNextMedia() {
 
     const postId = postShownIndex + 1 < posts.length ? postShownIndex + 1 : 0;
     mediaWrapper_Next.querySelector(".photo").src = posts[postId].mediaUrl;
+
+    if (posts[postId].caption != "") {
+        mediaWrapper_Next.querySelector(".caption-wrapper").classList.add("active");
+        mediaWrapper_Next.querySelector(".caption-content").innerText = posts[postId].caption;
+    }
+    else {
+        mediaWrapper_Next.querySelector(".caption-wrapper").classList.remove("active");
+        mediaWrapper_Next.querySelector(".caption-content").innerText = "";
+    }
+
     UpdateLikeOnCurrentPost();
 }
 
@@ -210,6 +283,7 @@ function ShowPreviousMedia() {
 
     const postId = postShownIndex - 1 > 0 ? postShownIndex - 1 : 0;
     mediaWrapper_Previous.querySelector(".photo").src = posts[postId].mediaUrl;
+    mediaWrapper_Previous.querySelector(".caption-content").innerText = posts[postId].caption;
     UpdateLikeOnCurrentPost();
 }
 
@@ -273,6 +347,23 @@ document.addEventListener("keydown", e => {
 
 GetAllPosts().then(() => {
     mediaWrapper_Previous.querySelector(".photo").src = posts[0].mediaUrl;
+
     mediaWrapper_Active.querySelector(".photo").src = posts[0].mediaUrl;
+
     mediaWrapper_Next.querySelector(".photo").src = posts[1].mediaUrl;
+    mediaWrapper_Next.querySelector(".caption-content").innerText = posts[1].caption;
+
+    if (posts[0].caption != "") {
+        mediaWrapper_Active.querySelector(".caption-wrapper").classList.add("active");
+        mediaWrapper_Active.querySelector(".caption-content").innerText = posts[0].caption;
+    }
+    else
+        mediaWrapper_Active.querySelector(".caption-wrapper").classList.remove("active");
+
+    if (posts[1].caption != "") {
+        mediaWrapper_Next.querySelector(".caption-wrapper").classList.add("active");
+        mediaWrapper_Next.querySelector(".caption-content").innerText = posts[0].caption;
+    }
+    else
+        mediaWrapper_Next.querySelector(".caption-wrapper").classList.remove("active");
 });
