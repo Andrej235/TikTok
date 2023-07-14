@@ -290,6 +290,10 @@ body {
         font-weight: 600;
     }
 
+    .profile-name.edited {
+        font-style: italic;
+    }
+
 .comment-text {
     min-height: 7vh;
     margin: 0;
@@ -300,7 +304,12 @@ body {
     white-space: break-spaces;
     word-wrap: break-word;
     margin: 0.33vw 0 0 0;
+    transition: 100ms;
 }
+
+    .comment-text[contenteditable="true"] {
+        border: 1px solid #aaa;
+    }
 
 #comment-section-footer {
     width: 100%;
@@ -339,13 +348,18 @@ body {
     opacity: 0;
 }
 
-.comment-edit-btn{
+.comment-edit-btn, .comment-delete-btn {
     color: #fff;
     font-size: 0;
     margin-left: 0.5em;
     cursor: pointer;
 }
 
-.comment-wrapper:hover .comment-edit-btn.active {
+/*.comment-delete-btn {
+    font-size: 1rem;
+}*/
+
+.comment-wrapper:hover .comment-edit-btn.active,
+.comment-wrapper:hover .comment-edit-btn.active + .comment-delete-btn.active {
     font-size: 1rem;
 }

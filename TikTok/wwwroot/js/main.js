@@ -119,7 +119,13 @@ async function UpdateCommentSection() {
 
             comments.forEach((com, i) => {
                 const newComment = document.importNode(commentTemplate.content, true);
+                const newCommentDOMId = `comment-id${com.id}`;
+                newComment.querySelector(".comment-wrapper").id = newCommentDOMId;
+
                 const newCommentProfileName = newComment.querySelector(".profile-name");
+
+                if (com.isEdited)
+                    newCommentProfileName.classList.add("edited");
 
                 fetch(`https://localhost:7002/api/user/get/${com.commentCreatorId}`, {
                     method: 'GET'
@@ -192,20 +198,40 @@ async function UpdateCommentSection() {
                 newCommentLikeBtn.querySelector("h1").textContent = commentsLikeIds[i].length > 0 ? commentsLikeIds[i].length : "";
                 newCommentContent.textContent = com.content;
 
+                const newCommentEditBtn = newComment.querySelector(".comment-edit-btn");
+                const newCommentDeleteBtn = newComment.querySelector(".comment-delete-btn");
+
                 if (com.commentCreatorId == userId) {
-                    newCommentEditBtn = newComment.querySelector(".comment-edit-btn");
                     newCommentEditBtn.classList.add("active");
 
+                    //Editing
                     const uneditedComment = newCommentContent.innerText;
                     newCommentEditBtn.addEventListener("click", () => {
                         if (newCommentContent.contentEditable != 'true') {
-                            console.log("Edit comment + " + com.id);
+                            console.log("Edit comment " + com.id);
                             newCommentContent.contentEditable = true;
+                            newCommentDeleteBtn.classList.add("active");
                         }
                         else {
+                            newCommentDeleteBtn.classList.remove("active");
                             if (newCommentContent.innerText !== uneditedComment) {
                                 console.log("User edited their comment");
-                                //TODO: Connect to db
+
+                                const options = {
+                                    method: 'PUT',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        Value: newCommentContent.innerText
+                                    })
+                                };
+
+                                fetch(`https://localhost:7002/api/comment/edit/${com.id}`, options)
+                                    .then(response => response.json())
+                                    .then(response => {
+                                        newCommentProfileName.classList.add("edited");
+                                        console.log(response)
+                                    })
+                                    .catch(err => console.error(err));
                             }
                             else {
                                 console.log("User canceled editing their comment");
@@ -216,6 +242,16 @@ async function UpdateCommentSection() {
                 }
 
                 commentsList.appendChild(newComment);
+
+                //Deleting
+                newCommentDeleteBtn.addEventListener("click", () => {
+                    fetch(`https://localhost:7002/api/comment/delete/${com.id}`, {
+                        method: 'DELETE'
+                    })
+                        .then(() => commentsList.querySelector(`#${newCommentDOMId}`).remove())
+                        .catch(err => console.error(err));
+                })
+
             })
         })
         .catch(err => console.error(err));
