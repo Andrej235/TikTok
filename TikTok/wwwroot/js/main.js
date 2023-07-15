@@ -1,10 +1,12 @@
 ﻿// Right Side
 const likeButtons = document.querySelectorAll(".like-button");
 const commentButtons = document.querySelectorAll(".comment-button");
+const shareButtons = document.querySelectorAll(".share-button");
 
 //Constant string literals
 const btnEnabledAnimationClass = "click-enabled";
 
+//Likes
 likeButtons.forEach(btn => {
     btn.addEventListener('click', () => {
         if (userId === undefined || userId == 0) {
@@ -38,6 +40,7 @@ async function UnlikePostVisualUpdate() {
     })
 }
 
+//Comments
 const commentTemplate = document.querySelector("#comment-template");
 const commentsList = document.querySelector("#comments-list-wrapper");
 const commentInputField = document.querySelector("#comment-input-field");
@@ -257,6 +260,25 @@ async function UpdateCommentSection() {
         .catch(err => console.error(err));
 }
 
+//Sharing
+let isSharingOnCooldown = false;
+const sharedPopup = document.querySelector("#share-popup");
+shareButtons.forEach(btn => {
+    btn.addEventListener("click", e => {
+        if (isSharingOnCooldown)
+            return;
+
+        isSharingOnCooldown = true;
+        navigator.clipboard.writeText(posts[postShownIndex].mediaUrl);
+        sharedPopup.classList.add("active");
+
+        setTimeout(() => {
+            sharedPopup.classList.remove("active");
+            isSharingOnCooldown = false;
+        }, 1000);
+    });
+});
+
 
 
 //Scrolling
@@ -286,7 +308,7 @@ function ShowNextMedia() {
     const postId = postShownIndex + 1 < posts.length ? postShownIndex + 1 : 0;
     mediaWrapper_Next.querySelector(".photo").src = posts[postId].mediaUrl;
 
-    if (posts[postId].caption != "") {
+    if (posts[postId].caption !== "") {
         mediaWrapper_Next.querySelector(".caption-wrapper").classList.add("active");
         mediaWrapper_Next.querySelector(".caption-content").innerText = posts[postId].caption;
     }
@@ -295,7 +317,17 @@ function ShowNextMedia() {
         mediaWrapper_Next.querySelector(".caption-content").innerText = "";
     }
 
-    UpdateLikeOnCurrentPost();
+    UpdatePostCreatorName(posts[postId].postCreatorId);
+    UpdateButtonsOnCurrentPost();
+}
+
+async function UpdatePostCreatorName(userId = 0, mediaWrapper = mediaWrapper_Next) {
+    fetch(`https://localhost:7002/api/user/get/${userId}`, {
+        method: 'GET'
+    })
+        .then(response => response.json())
+        .then(user => mediaWrapper.querySelector(".caption-creator-name").innerText = user.name)
+        .catch(err => console.error(err));
 }
 
 function ShowPreviousMedia() {
@@ -319,8 +351,18 @@ function ShowPreviousMedia() {
 
     const postId = postShownIndex - 1 > 0 ? postShownIndex - 1 : 0;
     mediaWrapper_Previous.querySelector(".photo").src = posts[postId].mediaUrl;
-    mediaWrapper_Previous.querySelector(".caption-content").innerText = posts[postId].caption;
-    UpdateLikeOnCurrentPost();
+
+    if (posts[postId].caption !== "") {
+        mediaWrapper_Previous.querySelector(".caption-wrapper").classList.add("active");
+        mediaWrapper_Previous.querySelector(".caption-content").innerText = posts[postId].caption;
+    }
+    else {
+        mediaWrapper_Previous.querySelector(".caption-wrapper").classList.remove("active");
+        mediaWrapper_Previous.querySelector(".caption-content").innerText = "";
+    }
+
+    UpdatePostCreatorName(posts[postId].postCreatorId, mediaWrapper_Previous);
+    UpdateButtonsOnCurrentPost();
 }
 
 const posts = [];
@@ -334,13 +376,13 @@ async function GetAllPosts() {
             response.forEach((post, i) => {
                 posts[i] = post;
             });
-            console.log(posts);
-            UpdateLikeOnCurrentPost();
+            //console.log(posts);
+            UpdateButtonsOnCurrentPost();
         })
         .catch(err => console.error(err));
 }
 
-async function UpdateLikeOnCurrentPost() {
+async function UpdateButtonsOnCurrentPost() {
     if (userId === undefined || userId == 0)
         return;
 
@@ -356,6 +398,19 @@ async function UpdateLikeOnCurrentPost() {
         mediaWrapper_Active.querySelector(".like-button").classList.add(btnEnabledAnimationClass);
     else
         mediaWrapper_Active.querySelector(".like-button").classList.remove(btnEnabledAnimationClass);
+
+    mediaWrapper_Active.querySelector(".number-of-likes-post").innerText = posts[postShownIndex].postLikeIds.length;
+    mediaWrapper_Active.querySelector(".number-of-comments-post").innerText = posts[postShownIndex].postCommentIds.length;
+    //TODO: Add shares to the backend
+    mediaWrapper_Active.querySelector(".number-of-shares-post").innerText = 0;//posts[postId].postCommentIds.length;
+
+    mediaWrapper_Active.querySelector(".caption-creator-name").removeEventListener("click", OpenPostCreatorsProfile);
+    mediaWrapper_Active.querySelector(".caption-creator-name").addEventListener("click", OpenPostCreatorsProfile);
+}
+
+function OpenPostCreatorsProfile() {
+    //TODO: Add opening user profiles, needs html and css as well
+    console.log(`Open user profile ${posts[postShownIndex].postCreatorId}`);
 }
 
 
@@ -388,6 +443,9 @@ GetAllPosts().then(() => {
 
     mediaWrapper_Next.querySelector(".photo").src = posts[1].mediaUrl;
     mediaWrapper_Next.querySelector(".caption-content").innerText = posts[1].caption;
+
+    UpdatePostCreatorName(posts[0].postCreatorId, mediaWrapper_Active);
+    UpdatePostCreatorName(posts[0].postCreatorId);
 
     if (posts[0].caption != "") {
         mediaWrapper_Active.querySelector(".caption-wrapper").classList.add("active");

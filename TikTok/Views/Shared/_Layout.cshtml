@@ -9,87 +9,66 @@
 </head>
 <body>
     <div id="bg">
-        <div id="bottom-icons-bar-wrapper">
-            <div class="icon fa fa-house">
-                <h1 class="icon-name">Home</h1>
-            </div>
+        <div id="user-profile-btn" class="icon fa fa-user"></div>
 
-            <div class="icon fa fa-user-group">
-                <h1 class="icon-name">Friends</h1>
-            </div>
+        <main>
+            @RenderBody()
+        </main>
 
-            <div id="plus-btn" class="icon fa fa-plus">
-                <h1 class="icon-name">Plus</h1>
+        <div id="publish-popup">
+            <img class="photo" draggable="false" src="" alt="Image not found" />
+            <input type="text" class="caption-input-field" placeholder="Caption..." />
+            <div class="random-photo-btn">
+                <h1>Random</h1>
             </div>
-
-            <div class="icon fa fa-inbox">
-                <h1 class="icon-name">Inbox</h1>
-            </div>
-
-            <div id="user-profile-btn" class="icon fa fa-snowman">
-                <h1 class="icon-name">Profile</h1>
+            <div class="publish-btn">
+                <h1>Publish</h1>
             </div>
         </div>
 
-        <div class="container">
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
-        </div>
-    </div>
+        <div id="profile-popup">
+            <h1 id="profile-name"></h1>
+            <div id="basic-info-wrapper">
+                <div class="info-wrapper">
+                    <h1 id="posts-info-value" class="value"></h1>
+                    <h2 class="category">Posts</h2>
+                </div>
 
-    <div id="publish-popup">
-        <img class="photo" draggable="false" src="" alt="Image not found" />
-        <input type="text" class="caption-input-field" placeholder="Caption..." />
-        <div class="random-photo-btn">
-            <h1>Random</h1>
-        </div>
-        <div class="publish-btn">
-            <h1>Publish</h1>
-        </div>
-    </div>
+                <div class="info-wrapper">
+                    <h1 id="comments-info-value" class="value"></h1>
+                    <h2 class="category">Comments</h2>
+                </div>
 
-    <div id="profile-popup">
-        <h1 id="profile-name"></h1>
-        <div id="basic-info-wrapper">
-            <div class="info-wrapper">
-                <h1 id="posts-info-value" class="value"></h1>
-                <h2 class="category">Posts</h2>
-            </div>
-
-            <div class="info-wrapper">
-                <h1 id="comments-info-value" class="value"></h1>
-                <h2 class="category">Comments</h2>
-            </div>
-
-            <div class="info-wrapper">
-                <h1 id="likes-info-value" class="value"></h1>
-                <h2 class="category">Likes</h2>
-            </div>
-        </div>
-        <div id="navigation-menu">
-            <div id="published-posts" class="icon fa fa-bars-staggered"></div>
-            <div id="saved-posts" class="icon fa fa-bookmark"></div>
-            <div id="liked-posts" class="icon fa fa-heart"></div>
-        </div>
-        <div id="post-grid"></div>
-
-        <div id="log-out-btn" class="fa-solid fa-arrow-right-from-bracket"></div>
-
-        <div id="log-in-screen">
-            <h1 id="log-in-title">Login</h1>
-            <div id="input-fields-wrapper">
-                <input id="name-field" class="input-field" type="text" placeholder="Name" />
-                <input id="email-field" class="input-field active" type="text" placeholder="Email" />
-                <input id="password-field" class="input-field active" type="password" placeholder="Password" />
-                <input id="repeat-password-field" class="input-field" type="password" placeholder="Repeat Password" />
-                <div id="log-in-btn">
-                    <h1>Login</h1>
+                <div class="info-wrapper">
+                    <h1 id="likes-info-value" class="value"></h1>
+                    <h2 class="category">Likes</h2>
                 </div>
             </div>
-            <h1 id="register-change-state-btn">Register</h1>
+            <div id="navigation-menu">
+                <div id="published-posts" class="icon fa fa-bars-staggered"></div>
+                <div id="plus-btn" class="icon fa fa-plus"></div>
+                <div id="liked-posts" class="icon fa fa-heart"></div>
+            </div>
+            <div id="post-grid"></div>
+
+            <div id="log-out-btn" class="fa-solid fa-arrow-right-from-bracket"></div>
+
+            <div id="log-in-screen">
+                <h1 id="log-in-title">Login</h1>
+                <div id="input-fields-wrapper">
+                    <input id="name-field" class="input-field" type="text" placeholder="Name" />
+                    <input id="email-field" class="input-field active" type="text" placeholder="Email" />
+                    <input id="password-field" class="input-field active" type="password" placeholder="Password" />
+                    <input id="repeat-password-field" class="input-field" type="password" placeholder="Repeat Password" />
+                    <div id="log-in-btn">
+                        <h1>Login</h1>
+                    </div>
+                </div>
+                <h1 id="register-change-state-btn">Register</h1>
+            </div>
         </div>
     </div>
+
 
     <template id="post-box-row-template">
         <div class="post-box-row"></div>

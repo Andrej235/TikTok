@@ -1,10 +1,10 @@
 ﻿let userId = document.cookie.replace(/\D/g, "");
 if (userId === "")
     userId = 0;
-console.log(userId);
+//console.log(userId);
 
 const userProfileBtn = document.querySelector("#user-profile-btn");
-const plusBtn = document.querySelector("#plus-btn");
+const openPublishPopupBtn = document.querySelector("#plus-btn");
 
 const profilePage = document.querySelector("#profile-popup");
 let isProfilePageOpen = false;
@@ -16,7 +16,6 @@ const profileCommentsInfoValue = profilePage.querySelector("#comments-info-value
 const profileLikesInfoValue = profilePage.querySelector("#likes-info-value");
 
 const profilePublishedPostsTabBtn = profilePage.querySelector("#published-posts");
-const profileSavedPostsTabBtn = profilePage.querySelector("#saved-posts");
 const profileLikedPostsTabBtn = profilePage.querySelector("#liked-posts");
 
 const profileLogOutBtn = profilePage.querySelector("#log-out-btn");
@@ -49,10 +48,6 @@ profilePublishedPostsTabBtn.addEventListener("click", () => {
         .then(response => response.json())
         .then(posts => PopulateProfilePostGrid(posts))
         .catch(err => console.error(err));
-});
-
-profileSavedPostsTabBtn.addEventListener("click", () => {
-    console.log("Show users saved posts");
 });
 
 profileLikedPostsTabBtn.addEventListener("click", () => {
@@ -213,7 +208,7 @@ const publishImg = publishPopup.querySelector(".photo");
 const captionInputField = publishPopup.querySelector(".caption-input-field");
 let isPublishPopupActive = false;
 
-plusBtn.addEventListener('click', () => {
+openPublishPopupBtn.addEventListener('click', () => {
     publishPopup.classList.add("active");
     isPublishPopupActive = true;
 });
@@ -223,9 +218,7 @@ document.addEventListener("keydown", e => {
         if (isPublishPopupActive) {
             publishPopup.classList.remove("active");
             isPublishPopupActive = false;
-        }
-
-        if (isProfilePageOpen) {
+        } else if (isProfilePageOpen) {
             profilePage.classList.remove("active");
             isProfilePageOpen = false;
         }
@@ -280,6 +273,7 @@ publishBtn.addEventListener('click', () => {
             isPublishPopupActive = false;
             captionInputField.value = "";
             AssignRandomImage();
+            UpdateProfileInfo();
         })
         .catch(err => console.error(err));
 });
