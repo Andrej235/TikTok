@@ -334,7 +334,7 @@ namespace TikTok.Controllers
             parentPost.PostComments.Add(comment);
 
             await context.SaveChangesAsync();
-            return Ok();
+            return Ok(comment.Id);
         }
 
         [Route("/api/comment/get/{commentId}")]

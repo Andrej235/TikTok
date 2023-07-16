@@ -19,7 +19,7 @@ body {
     border-right: 5px solid #212121;
 }
 
-#user-profile-btn {
+#user-profile-btn, #post-delete-btn {
     position: absolute;
     top: 0;
     left: 98%;
@@ -38,7 +38,20 @@ body {
         opacity: 1;
     }
 
+#post-delete-btn {
+    top: 98%;
+    transform: translate(-100%, -100%);
+    opacity: 0;
+}
 
+    #post-delete-btn.active {
+        opacity: 0.75;
+    }
+
+    #post-delete-btn:hover {
+        opacity: 1;
+        color: #f55;
+    }
 
 /*Publish*/
 #publish-popup {
@@ -156,7 +169,7 @@ body {
                 font-size: 3rem;
             }
 
-            #profile-popup.active .icon {
+            #profile-popup.active .icon.active {
                 font-size: 2.25rem;
             }
 
@@ -223,8 +236,8 @@ body {
     height: 5.5%;
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
-    gap: 2.5%;
+    justify-content: center;
+    /*    gap: 2.5%;*/
     align-items: center;
     align-content: center;
     background-color: #212121;
@@ -232,6 +245,7 @@ body {
 
     #navigation-menu .icon {
         cursor: pointer;
+        margin: 0 1.5em;
     }
 
 #post-grid {
@@ -261,7 +275,8 @@ body {
 .post-box-image {
     width: 45%;
     aspect-ratio: 9 / 16;
-    padding: 0.5vw;
+    margin: 0.5vw;
+    cursor: pointer;
 }
 
 

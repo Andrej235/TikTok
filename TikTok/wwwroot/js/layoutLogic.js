@@ -1,7 +1,22 @@
-﻿let userId = document.cookie.replace(/\D/g, "");
+﻿import { EnterSpecialState_UpdatePost as UpdateSpecialPost, ExitSpecialState_UpdatePost as CloseSpecialPost, getSpecialPost } from '/js/main.js'
+
+let userId = document.cookie.replace(/\D/g, "");
+export let getUserId = () => userId;
 if (userId === "")
     userId = 0;
-//console.log(userId);
+
+let isInSpecialPostOpenState = false;
+export let getIsInSpecialPostOpenState = () => isInSpecialPostOpenState;
+
+
+
+//Prevent tab from changing focus
+window.addEventListener('keydown', function (event) {
+    if (event.key == 'Tab') {
+        event.preventDefault();
+    }
+});
+
 
 const userProfileBtn = document.querySelector("#user-profile-btn");
 const openPublishPopupBtn = document.querySelector("#plus-btn");
@@ -30,15 +45,15 @@ const registerNameInputField = profileLogInScreen.querySelector("#name-field");
 const registerRepeatPasswordInputField = profileLogInScreen.querySelector("#repeat-password-field");
 const logInTitle = profileLogInScreen.querySelector("#log-in-title");
 
-
+//Profile page
 userProfileBtn.addEventListener('click', () => {
-    isProfilePageOpen = true;
-    profilePage.classList.add("active");
+    if (isInSpecialPostOpenState)
+        ExitSpecialState();
 
     if (userId < 1)
         profileLogInScreen.classList.add("active");
     else
-        UpdateProfileInfo();
+        OpenUserProfile(userId, true);
 });
 
 profilePublishedPostsTabBtn.addEventListener("click", () => {
@@ -59,12 +74,29 @@ profileLikedPostsTabBtn.addEventListener("click", () => {
         .catch(err => console.error(err));
 });
 
+export function OpenUserProfile(id = 0, showExtraMenus = false) {
+    if (id < 1)
+        return;
+
+    if (showExtraMenus) {
+        openPublishPopupBtn.classList.add("active");
+        profileLikedPostsTabBtn.classList.add("active");
+    }
+    else {
+        openPublishPopupBtn.classList.remove("active");
+        profileLikedPostsTabBtn.classList.remove("active");
+    }
+
+    isProfilePageOpen = true;
+    profilePage.classList.add("active");
+    UpdateProfileInfo(id);
+}
 
 const profilePostBoxGrid = document.querySelector("#post-grid");
 const profilePostRowTemplate = document.querySelector("#post-box-row-template");
 const profilePostImageTemplate = document.querySelector("#post-box-image-template");
-function UpdateProfileInfo() {
-    fetch(`https://localhost:7002/api/user/get/${userId}`, {
+function UpdateProfileInfo(id = 0) {
+    fetch(`https://localhost:7002/api/user/get/${id}`, {
         method: 'GET'
     })
         .then(response => response.json())
@@ -73,7 +105,7 @@ function UpdateProfileInfo() {
             profilePostsInfoValue.innerText = user.publishedPostIds.length;
             profileCommentsInfoValue.innerText = user.publishedCommentIds.length;
 
-            fetch(`https://localhost:7002/api/post/get/publishedbyuser/${userId}`, {
+            fetch(`https://localhost:7002/api/post/get/publishedbyuser/${id}`, {
                 method: 'GET'
             })
                 .then(response => response.json())
@@ -104,16 +136,51 @@ function PopulateProfilePostGrid(posts) {
 
         const newImage = document.importNode(profilePostImageTemplate.content, true);
         newImage.querySelector("img").src = posts[i * 2].mediaUrl;
+        newImage.querySelector("img").addEventListener("click", () => OpenSpecificPost(posts[i * 2].id));
         row.appendChild(newImage);
 
         if (i * 2 + 1 < posts.length) {
             const newImage2 = document.importNode(profilePostImageTemplate.content, true);
             newImage2.querySelector("img").src = posts[i * 2 + 1].mediaUrl;
+            newImage2.querySelector("img").addEventListener("click", () => OpenSpecificPost(posts[i * 2 + 1].id));
             row.appendChild(newImage2);
         }
     });
 }
 
+function OpenSpecificPost(id = 0) {
+    if (id < 1 || isInSpecialPostOpenState)
+        return;
+
+    isInSpecialPostOpenState = true;
+    profilePage.classList.remove("active");
+    UpdateSpecialPost(id);
+}
+
+const postDeleteBtn = document.querySelector("#post-delete-btn");
+export function ToggleDeleteBtn(state) {
+    if (state == undefined)
+        postDeleteBtn.classList.toggle("active");
+
+    state ? postDeleteBtn.classList.add("active") : postDeleteBtn.classList.remove("active");
+}
+postDeleteBtn.addEventListener("click", () => {
+    fetch(`https://localhost:7002/api/post/delete/${getSpecialPost().id}`, {
+        method: 'DELETE'
+    })
+        .then(() => ExitSpecialState())
+        .catch(err => console.error(err));
+        //TODO: updating like button doesn't work when entering special state + when a post is deleted it doesn't dissapear from user profile before refreshing it
+});
+
+export function ExitSpecialState() {
+    CloseSpecialPost();
+    profilePage.classList.add("active");
+    isInSpecialPostOpenState = false;
+}
+
+
+//Log in
 profileLogOutBtn.addEventListener("click", () => {
     console.log("Logged out");
     document.cookie = `userId = 0`;
@@ -213,18 +280,6 @@ openPublishPopupBtn.addEventListener('click', () => {
     isPublishPopupActive = true;
 });
 
-document.addEventListener("keydown", e => {
-    if (e.key === 'Escape') {
-        if (isPublishPopupActive) {
-            publishPopup.classList.remove("active");
-            isPublishPopupActive = false;
-        } else if (isProfilePageOpen) {
-            profilePage.classList.remove("active");
-            isProfilePageOpen = false;
-        }
-    }
-});
-
 let isFetchingImage = false;
 fetchRandomImgBtn.addEventListener("click", () => {
     if (!isFetchingImage)
@@ -273,9 +328,26 @@ publishBtn.addEventListener('click', () => {
             isPublishPopupActive = false;
             captionInputField.value = "";
             AssignRandomImage();
-            UpdateProfileInfo();
+            UpdateProfileInfo(userId);
         })
         .catch(err => console.error(err));
+});
+
+
+
+document.addEventListener("keydown", e => {
+    if (e.key === 'Escape') {
+        if (isInSpecialPostOpenState) {
+            ExitSpecialState();
+        }
+        else if (isPublishPopupActive) {
+            publishPopup.classList.remove("active");
+            isPublishPopupActive = false;
+        } else if (isProfilePageOpen) {
+            profilePage.classList.remove("active");
+            isProfilePageOpen = false;
+        }
+    }
 });
 
 

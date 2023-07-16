@@ -10,6 +10,7 @@
 <body>
     <div id="bg">
         <div id="user-profile-btn" class="icon fa fa-user"></div>
+        <div id="post-delete-btn" class="icon fa fa-trash"></div>
 
         <main>
             @RenderBody()
@@ -45,7 +46,7 @@
                 </div>
             </div>
             <div id="navigation-menu">
-                <div id="published-posts" class="icon fa fa-bars-staggered"></div>
+                <div id="published-posts" class="icon fa fa-bars-staggered active"></div>
                 <div id="plus-btn" class="icon fa fa-plus"></div>
                 <div id="liked-posts" class="icon fa fa-heart"></div>
             </div>
@@ -78,6 +79,6 @@
         <img src="" alt="Image not found" class="post-box-image" />
     </template>
 
-    <script src="~/js/layoutLogic.js"></script>
+    <script type="module" src="~/js/layoutLogic.js"></script>
 </body>
 </html>
