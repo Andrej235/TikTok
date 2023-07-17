@@ -122,6 +122,19 @@ body {
     animation: postUnlike 0.25s linear 0s 1 normal forwards;
 }
 
+.share-button {
+    transform: translate(-50%, -50%) rotate(0deg);
+    transform-origin: center center;
+    text-align: center;
+    font-size: 2.5rem;
+    transition: 125ms
+}
+
+    .share-button.active {
+        color: #0f0;
+        font-size: 3rem;
+    }
+
 @keyframes postLike {
     50% {
         color: #da0b0b;
@@ -374,7 +387,7 @@ body {
 
 
 /*Share popup*/
-#share-popup {
+/*#share-popup {
     background-color: #3d3d3d;
     border: 3px solid #000;
     border-radius: 100px;
@@ -399,4 +412,4 @@ body {
         border: 3px solid #000;
         top: 50%;
         opacity: 1;
-    }
+    }*/

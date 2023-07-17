@@ -41,17 +41,21 @@ body {
 #post-delete-btn {
     top: 98%;
     transform: translate(-100%, -100%);
-    opacity: 0;
 }
+
+    #post-delete-btn:not(.active) {
+        opacity: 1;
+        font-size: 0;
+    }
 
     #post-delete-btn.active {
         opacity: 0.75;
     }
 
-    #post-delete-btn:hover {
-        opacity: 1;
-        color: #f55;
-    }
+        #post-delete-btn.active:hover {
+            opacity: 1;
+            color: #f55;
+        }
 
 /*Publish*/
 #publish-popup {

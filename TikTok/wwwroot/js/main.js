@@ -274,12 +274,15 @@ shareButtons.forEach(btn => {
 
         isSharingOnCooldown = true;
         navigator.clipboard.writeText(posts[postShownIndex].mediaUrl);
-        sharedPopup.classList.add("active");
+        btn.classList.add("active");
 
         setTimeout(() => {
-            sharedPopup.classList.remove("active");
+            btn.classList.remove("active");
+        }, 125);
+
+        setTimeout(() => {
             isSharingOnCooldown = false;
-        }, 1000);
+        }, 250);
     });
 });
 
@@ -369,34 +372,8 @@ function ShowPreviousMedia() {
     UpdateButtonsOnCurrentPost();
 }
 
-const posts = [];
-let postShownIndex = 0;
-async function GetAllPosts() {
-    const options = { method: 'GET' };
-
-    return fetch('https://localhost:7002/api/post/getall', options)
-        .then(response => response.json())
-        .then(response => {
-            response.forEach((post, i) => {
-                posts[i] = post;
-            });
-            //console.log(posts);
-            UpdateButtonsOnCurrentPost();
-        })
-        .catch(err => console.error(err));
-}
-
 async function UpdateButtonsOnCurrentPost(post = posts[postShownIndex]) {
-    if (GetUserId() === undefined || GetUserId() == 0)
-        return;
-
-    let isLiked = false;
-    for (var i = 0; i < posts[postShownIndex].postLikeIds.length; i++) {
-        if (posts[postShownIndex].postLikeIds[i] == GetUserId()) {
-            isLiked = true;
-            break;
-        }
-    }
+    const isLiked = GetUserId() != undefined && GetUserId() != 0 && post.postLikeIds.includes(parseInt(GetUserId()));
 
     if (isLiked)
         mediaWrapper_Active.querySelector(".like-button").classList.add(btnEnabledAnimationClass);
@@ -417,7 +394,7 @@ function OpenPostCreatorsProfile() {
 
     if (!GetSpecialState())
         OpenUserProfile(posts[postShownIndex].postCreatorId);
-    else { 
+    else {
         OpenUserProfile(specialPost.postCreatorId);
         ExitSpecialState();
     }
@@ -473,32 +450,34 @@ GetAllPosts().then(() => {
 });
 
 //Exports
-let specialPost = 0;
+let specialPost;
 export let getSpecialPost = () => specialPost;
 export function EnterSpecialState_UpdatePost(id = 0) {
     if (id == 0)
         return;
 
-    const post = posts[posts.map(p => p.id).indexOf(id)];
-    specialPost = post;
-    console.log(post);
+    GetAllPosts()
+        .then(() => {
+            specialPost = posts[posts.map(p => p.id).indexOf(id)];
+            //console.log(specialPost);
 
-    mediaWrapper_Active.querySelector(".photo").src = post.mediaUrl;
+            mediaWrapper_Active.querySelector(".photo").src = specialPost.mediaUrl;
 
-    if (post.caption !== "") {
-        mediaWrapper_Active.querySelector(".caption-wrapper").classList.add("active");
-        mediaWrapper_Active.querySelector(".caption-content").innerText = post.caption;
-    }
-    else {
-        mediaWrapper_Active.querySelector(".caption-wrapper").classList.remove("active");
-        mediaWrapper_Active.querySelector(".caption-content").innerText = "";
-    }
+            if (specialPost.caption !== "") {
+                mediaWrapper_Active.querySelector(".caption-wrapper").classList.add("active");
+                mediaWrapper_Active.querySelector(".caption-content").innerText = specialPost.caption;
+            }
+            else {
+                mediaWrapper_Active.querySelector(".caption-wrapper").classList.remove("active");
+                mediaWrapper_Active.querySelector(".caption-content").innerText = "";
+            }
 
-    UpdatePostCreatorName(post.postCreatorId, mediaWrapper_Active);
-    UpdateButtonsOnCurrentPost(post);
-    if (post.postCreatorId == GetUserId()) {
-        ToggleDeleteBtn(true);
-    }
+            UpdatePostCreatorName(specialPost.postCreatorId, mediaWrapper_Active);
+            UpdateButtonsOnCurrentPost(specialPost);
+            if (specialPost.postCreatorId == GetUserId()) {
+                ToggleDeleteBtn(true);
+            }
+        })
 }
 
 export function ExitSpecialState_UpdatePost() {
@@ -516,10 +495,27 @@ export function ExitSpecialState_UpdatePost() {
         }
 
         UpdatePostCreatorName(post.postCreatorId, mediaWrapper_Active);
-        UpdateButtonsOnCurrentPost();
+        UpdateButtonsOnCurrentPost(post);
     }, 250)
 
     if (post.postCreatorId == GetUserId()) {
         ToggleDeleteBtn(false);
     }
+}
+
+const posts = [];
+let postShownIndex = 0;
+export async function GetAllPosts() {
+    const options = { method: 'GET' };
+
+    return fetch('https://localhost:7002/api/post/getall', options)
+        .then(response => response.json())
+        .then(response => {
+            response.forEach((post, i) => {
+                posts[i] = post;
+            });
+            //console.log(posts);
+            UpdateButtonsOnCurrentPost();
+        })
+        .catch(err => console.error(err));
 }

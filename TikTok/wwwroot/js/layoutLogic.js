@@ -1,4 +1,4 @@
-﻿import { EnterSpecialState_UpdatePost as UpdateSpecialPost, ExitSpecialState_UpdatePost as CloseSpecialPost, getSpecialPost } from '/js/main.js'
+﻿import { EnterSpecialState_UpdatePost as UpdateSpecialPost, ExitSpecialState_UpdatePost as CloseSpecialPost, getSpecialPost, GetAllPosts } from '/js/main.js'
 
 let userId = document.cookie.replace(/\D/g, "");
 export let getUserId = () => userId;
@@ -50,10 +50,10 @@ userProfileBtn.addEventListener('click', () => {
     if (isInSpecialPostOpenState)
         ExitSpecialState();
 
-    if (userId < 1)
+    if (userId == 0)
         profileLogInScreen.classList.add("active");
-    else
-        OpenUserProfile(userId, true);
+
+    OpenUserProfile(userId, true);
 });
 
 profilePublishedPostsTabBtn.addEventListener("click", () => {
@@ -75,9 +75,6 @@ profileLikedPostsTabBtn.addEventListener("click", () => {
 });
 
 export function OpenUserProfile(id = 0, showExtraMenus = false) {
-    if (id < 1)
-        return;
-
     if (showExtraMenus) {
         openPublishPopupBtn.classList.add("active");
         profileLikedPostsTabBtn.classList.add("active");
@@ -96,6 +93,9 @@ const profilePostBoxGrid = document.querySelector("#post-grid");
 const profilePostRowTemplate = document.querySelector("#post-box-row-template");
 const profilePostImageTemplate = document.querySelector("#post-box-image-template");
 function UpdateProfileInfo(id = 0) {
+    if (id == 0)
+        return;
+
     fetch(`https://localhost:7002/api/user/get/${id}`, {
         method: 'GET'
     })
@@ -168,9 +168,11 @@ postDeleteBtn.addEventListener("click", () => {
     fetch(`https://localhost:7002/api/post/delete/${getSpecialPost().id}`, {
         method: 'DELETE'
     })
-        .then(() => ExitSpecialState())
+        .then(() => {
+            UpdateProfileInfo(userId);
+            ExitSpecialState();
+        })
         .catch(err => console.error(err));
-        //TODO: updating like button doesn't work when entering special state + when a post is deleted it doesn't dissapear from user profile before refreshing it
 });
 
 export function ExitSpecialState() {
