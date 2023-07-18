@@ -15,12 +15,6 @@ namespace TikTok.Models
         public Post ParentPost { get; set; } = null!;
         public int ParentPostId { get; set; }
 
-        /*        [InverseProperty("ChildComments")]
-                public Comment? ParentComment { get; set; }
-
-                [InverseProperty("ParentComment")]
-                public ICollection<Comment>? ChildComments { get; set; }*/
-
         public User CommentCreator { get; set; } = null!;
         public int CommentCreatorId { get; set; }
 

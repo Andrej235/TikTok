@@ -16,8 +16,5 @@ namespace TikTok.Models
         public ICollection<Post>? PublishedPosts { get; set; }
 
         public ICollection<Comment>? PublishedComments { get; set; }
-
-        //public ICollection<User>? Following { get; set; }
-        //public ICollection<User>? Followers { get; set; }
     }
 }

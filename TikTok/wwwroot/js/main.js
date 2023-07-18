@@ -276,6 +276,15 @@ shareButtons.forEach(btn => {
         navigator.clipboard.writeText(posts[postShownIndex].mediaUrl);
         btn.classList.add("active");
 
+        fetch(`https://localhost:7002/api/post/addshare/${posts[postShownIndex].id}`, {
+            method: 'PUT'
+        })
+            .catch(err => console.error(err));
+
+        //TODO: Make the UI update --- the line underneath doesn't work for some reason (maybe didn't update)
+        //Also missing the sharing stuff for when the user is looking at a specific post - special state - add check
+        UpdateButtonsOnCurrentPost();
+
         setTimeout(() => {
             btn.classList.remove("active");
         }, 125);
@@ -382,8 +391,7 @@ async function UpdateButtonsOnCurrentPost(post = posts[postShownIndex]) {
 
     mediaWrapper_Active.querySelector(".number-of-likes-post").innerText = post.postLikeIds.length;
     mediaWrapper_Active.querySelector(".number-of-comments-post").innerText = post.postCommentIds.length;
-    //TODO: Add shares to the backend
-    mediaWrapper_Active.querySelector(".number-of-shares-post").innerText = 0;//posts[postId].postCommentIds.length;
+    mediaWrapper_Active.querySelector(".number-of-shares-post").innerText = post.postNumberOfShares;//posts[postId].postCommentIds.length;
 
     mediaWrapper_Active.querySelector(".caption-creator-name").removeEventListener("click", OpenPostCreatorsProfile);
     mediaWrapper_Active.querySelector(".caption-creator-name").addEventListener("click", OpenPostCreatorsProfile);

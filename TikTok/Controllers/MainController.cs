@@ -134,7 +134,8 @@ namespace TikTok.Controllers
                 MediaUrl = post.MediaUrl,
                 PostCreatorId = post.PostCreator.Id,
                 PostLikeIds = post.PostLikes?.Select(u => u.Id).ToList(),
-                PostCommentIds = post.PostComments?.Select(c => c.Id).ToList()
+                PostCommentIds = post.PostComments?.Select(c => c.Id).ToList(),
+                PostNumberOfShares = post.NumberOfShares
 
             }).ToList();
             return Ok(postDTOs);
@@ -160,7 +161,8 @@ namespace TikTok.Controllers
                 MediaUrl = post.MediaUrl,
                 PostCreatorId = post.PostCreator.Id,
                 PostLikeIds = post.PostLikes?.Select(p => p.Id).ToList(),
-                PostCommentIds = post.PostComments?.Select(p => p.Id).ToList()
+                PostCommentIds = post.PostComments?.Select(p => p.Id).ToList(),
+                PostNumberOfShares = post.NumberOfShares
             };
             return Ok(postDTO);
         }
@@ -192,7 +194,8 @@ namespace TikTok.Controllers
                 MediaUrl = post.MediaUrl,
                 PostCreatorId = post.PostCreator.Id,
                 PostLikeIds = post.PostLikes?.Select(u => u.Id).ToList(),
-                PostCommentIds = post.PostComments?.Select(c => c.Id).ToList()
+                PostCommentIds = post.PostComments?.Select(c => c.Id).ToList(),
+                PostNumberOfShares = post.NumberOfShares
             }).ToList();
 
             return Ok(postDTOs);
@@ -225,7 +228,8 @@ namespace TikTok.Controllers
                 MediaUrl = post.MediaUrl,
                 PostCreatorId = post.PostCreator.Id,
                 PostLikeIds = post.PostLikes?.Select(u => u.Id).ToList(),
-                PostCommentIds = post.PostComments?.Select(c => c.Id).ToList()
+                PostCommentIds = post.PostComments?.Select(c => c.Id).ToList(),
+                PostNumberOfShares = post.NumberOfShares
             }).ToList();
 
             return Ok(postDTOs);
@@ -288,6 +292,19 @@ namespace TikTok.Controllers
 
             await context.SaveChangesAsync();
             return Ok("User " + likeInfo.UserId + " successfully unliked post " + likeInfo.PostId);
+        }
+
+        [Route("api/post/addshare/{postId}")]
+        [HttpPut]
+        public async Task<IActionResult> SharePost(int postId)
+        {
+            var post = await context.Posts.FindAsync(postId);
+            if (post == null)
+                return NotFound("Post not found");
+
+            post.NumberOfShares++;
+            await context.SaveChangesAsync();
+            return Ok("Successfully shared post " + postId);
         }
 
         [Route("api/post/delete/{postId}")]
@@ -506,6 +523,7 @@ namespace TikTok.Controllers
         public int PostCreatorId { get; set; }
         public ICollection<int>? PostLikeIds { get; set; }
         public ICollection<int>? PostCommentIds { get; set; }
+        public int PostNumberOfShares { get; set; }
     }
 
     public class CommentDTO

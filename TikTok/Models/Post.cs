@@ -14,5 +14,7 @@ namespace TikTok.Models
         public ICollection<User>? PostLikes { get; set; }
 
         public ICollection<Comment>? PostComments { get; set; }
+
+        public int NumberOfShares { get; set; }
     }
 }
