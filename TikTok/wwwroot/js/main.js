@@ -276,14 +276,19 @@ shareButtons.forEach(btn => {
         navigator.clipboard.writeText(posts[postShownIndex].mediaUrl);
         btn.classList.add("active");
 
-        fetch(`https://localhost:7002/api/post/addshare/${posts[postShownIndex].id}`, {
+        fetch(`https://localhost:7002/api/post/addshare/${!GetSpecialState() ? posts[postShownIndex].id : specialPost.id}`, {
             method: 'PUT'
         })
             .catch(err => console.error(err));
 
-        //TODO: Make the UI update --- the line underneath doesn't work for some reason (maybe didn't update)
-        //Also missing the sharing stuff for when the user is looking at a specific post - special state - add check
-        UpdateButtonsOnCurrentPost();
+        if (!GetSpecialState()) {
+            posts[postShownIndex].postNumberOfShares++;
+            UpdateButtonsOnCurrentPost();
+        }
+        else {
+            specialPost.postNumberOfShares++;
+            UpdateButtonsOnCurrentPost(specialPost);
+        }
 
         setTimeout(() => {
             btn.classList.remove("active");

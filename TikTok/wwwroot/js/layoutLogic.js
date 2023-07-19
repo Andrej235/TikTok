@@ -92,7 +92,7 @@ export function OpenUserProfile(id = 0, showExtraMenus = false) {
 const profilePostBoxGrid = document.querySelector("#post-grid");
 const profilePostRowTemplate = document.querySelector("#post-box-row-template");
 const profilePostImageTemplate = document.querySelector("#post-box-image-template");
-function UpdateProfileInfo(id = 0) {
+function UpdateProfileInfo(id = userId) {
     if (id == 0)
         return;
 
@@ -217,11 +217,10 @@ logInBtn.addEventListener("click", () => {
 
                     userId = id;
                     document.cookie = `userId = ${id}`;
-                    console.log("Logged in");
-                    console.log(id)
+                    console.log("Logged in. Id: " + id);
                     profileLogInScreen.classList.remove("active");
                     UpdateProfileInfo();
-                    GetAllPosts();
+                    GetAllPosts(); //Updates info of all posts --- needed for comments and likes mostly
                 })
                 .catch(err => console.error(err));
         }
